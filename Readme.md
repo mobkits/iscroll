@@ -2,7 +2,7 @@
 
 Make element scroll on android `scroll` event is fired with `e.detail === translateY` when scrolling.
 
-TODO: add scrollbar.
+TODO: add scrollbar.  
 TODO: rework speed calculate method.
 
 [demo](http://chemzqm.github.io/iscroll/)
