@@ -1,0 +1,32 @@
+{
+  "name": "iscroll",
+  "repository": "chemzqm/iscroll",
+  "description": "emulate scroll on android <= 4",
+  "version": "0.0.1",
+  "keywords": [],
+  "demo": "http://chemzqm.github.io/iscroll/",
+  "dependencies": {
+    "component/has-translate3d": "*",
+    "component/touchaction-property": "*",
+    "component/throttle": "*",
+    "component/events": "*",
+    "component/raf": "*",
+    "component/tween": "*",
+    "component/emitter": "*",
+    "component/per-frame": "*",
+    "component/transform-property": "*",
+    "chemzqm/computed-style": "*"
+  },
+  "development": {
+    "dependencies": {}
+  },
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ],
+  "templates": [
+  ],
+  "styles": [
+  ]
+}
