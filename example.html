@@ -63,8 +63,10 @@
       color: #00A0E9;
     }
     .scrollable {
-      width: 100%;
       position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
       overflow-y: scroll;
       -webkit-user-select: none;
       -moz-user-select: none;
@@ -187,17 +189,12 @@
   <script>
     var iscroll = require('iscroll');
     var el = document.querySelector('.scrollable');
-    var is = iscroll(el);
 
+    var is = iscroll(el);
     el.addEventListener('scroll', function(e) {
       document.getElementById('indicator').textContent = e.detail ;
     }, false);
 
-    is.on('release', function(y) {
-      if (y > 60) {
-        is.scrollTo(60, 100);
-      }
-    })
   </script>
 </body>
 </html>
