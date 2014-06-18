@@ -1,6 +1,6 @@
 # iscroll
 
-Make element scroll on android < 3, `scroll` event is fired with `e.detail === translateY` when scrolling.
+Make element scroll on android `scroll` event is fired with `e.detail === translateY` when scrolling.
 
 [demo](http://chemzqm.github.io/iscroll/)
 
@@ -13,10 +13,18 @@ Install with [component(1)](http://component.io):
 ## Example
 
 ```js
-var iscroll = require('iscroll');
-if (android_version < 3) {
-  iscroll(el);
-}
+var Iscroll = require('iscroll');
+var el = document.getElementById('scrollable');
+var scroll = new Iscroll(el);
+
+scroll.on('release', function(y) {
+  console.log('tranlateY: ' + y);
+})
+
+el.on('scroll', function(e) {
+  //e.target == el
+  console.log('tranlateY:' + e.detail);
+})
 ```
 
 ## API
