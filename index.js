@@ -95,6 +95,7 @@ Iscroll.prototype.ontouchmove = frame(function (e) {
   if (!touch) {
     return;
   }
+  e.preventDefault();
 
   var down = this.down;
   var y = touch.pageY;
@@ -124,7 +125,8 @@ Iscroll.prototype.ontouchend = function (e) {
   if (!this.down || !this.speed) return;
   var touch = this.getTouch(e);
   var m = this.momentum(touch.pageY - this.pageY);
-  this.scrollTo(m.dest, m.duration, m.easing);
+  this.scrollTo(m.dest, m.duration);
+  this.emit('release', this.y);
 }
 
 Iscroll.prototype.momentum = function (distance) {
@@ -148,17 +150,19 @@ Iscroll.prototype.momentum = function (distance) {
   var easing = 'out-quad';
   return {
     dest: destination,
-    duration: duration,
-    easing: easing
+    duration: duration
   }
 }
 
 
 Iscroll.prototype.scrollTo = function (y, duration, easing) {
+  if (this.tween) this.tween.stop();
   var intransition = duration > 0;
   if (!intransition) {
     return this.translate(y);
   }
+
+  easing = easing || 'out-quad';
   var tween = this.tween = Tween({y : this.y})
       .ease(easing)
       .to({y: y})
@@ -222,7 +226,13 @@ Iscroll.prototype.transitionDuration = function(ms){
 
 Iscroll.prototype.translate = function(y) {
   var s = this.el.style;
-  this.y = y;
+  if (this.y !== y) {
+    this.y = y;
+    //only way for android 2.x to dispatch custom event
+    var evt = document.createEvent('UIEvents');
+    evt.initUIEvent('scroll', false, false, true, y);
+    this.el.dispatchEvent(evt);
+  }
   if (has3d) {
     s.webkitTransform = 'translate3d(0, ' + y + 'px' + ', 0)';
   } else {

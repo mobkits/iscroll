@@ -6,13 +6,13 @@
   <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1,width=device-width, height=device-height"/>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <script src="build/build.js"></script>
   <style>
     body {
       font: 500 14px/1.6 "Helvetica Neue", Helvetica, sans-serif;
       padding: 0px;
       background-color: #e8e8e8;
       overflow: hidden;
+      margin: 0px;
     }
     * {
       -webkit-box-sizing: border-box;
@@ -75,14 +75,23 @@
     .wrapper {
       overflow: hidden;
       position: fixed;
-      top: 0;
+      top: 30px;
       left: 0;
       right: 0;
       bottom: 0;
     }
+    #indicator {
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      background-color: #fff;
+    }
   </style>
 </head>
 <body>
+  <div id="indicator">
+    11
+  </div>
   <div class="wrapper">
     <div class="scrollable">
       <ul class="content">
@@ -174,14 +183,21 @@
       <div class="bottom">Made by @chemzqm</div>
     </div>
   </div>
+  <script src="build/build.js"></script>
   <script>
     var iscroll = require('iscroll');
     var el = document.querySelector('.scrollable');
-    iscroll(el);
+    var is = iscroll(el);
 
     el.addEventListener('scroll', function(e) {
-      console.log('scroll');
-    });
+      document.getElementById('indicator').textContent = e.detail ;
+    }, false);
+
+    is.on('release', function(y) {
+      if (y > 60) {
+        is.scrollTo(60, 100);
+      }
+    })
   </script>
 </body>
 </html>
