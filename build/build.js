@@ -1358,6 +1358,9 @@ function Iscroll(el) {
   this.el.__defineGetter__('scrollTop', function(){
     return - self.y;
   })
+  this.el.__defineSetter__('scrollTop', function(v){
+    return self.scrollTo(v, 200);
+  })
 }
 
 Emitter(Iscroll.prototype);
