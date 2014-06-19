@@ -188,7 +188,7 @@ Iscroll.prototype.momentum = function () {
 
 Iscroll.prototype.scrollTo = function (y, duration, easing) {
   if (this.tween) this.tween.stop();
-  var intransition = duration > 0;
+  var intransition = (duration > 0 && y !== this.y);
   if (!intransition) {
     return this.translate(y);
   }
