@@ -24,13 +24,12 @@ var el = document.getElementById('scrollable');
 var scroll = new Iscroll(el);
 
 scroll.on('release', function(y) {
-  console.log('tranlateY: ' + y);
+  console.log(el.scrollTop);
 })
 
-el.on('scroll', function(e) {
-  //e.target == el
-  console.log('tranlateY:' + e.detail);
-})
+el.addEventListener('scroll', function(e) {
+  console.log(el.scrollTop);
+}, false);
 ```
 
 ## API
@@ -47,7 +46,7 @@ Recalculate element height, call this after element height changed. (called auto
 
 ### .scrollTo(y, [duration])
 
-Set translateY to `y` with optional duration(ms)
+Set translateY to `y` with optional duration(ms), called when you set `el.scrollTop`.
 
 ## License
 

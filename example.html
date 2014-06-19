@@ -97,7 +97,10 @@
 <body>
   <div id="indicator">
     <div id="log"></div>
-    <div><button id="button">添加</button></div>
+    <div>
+      <button id="add">添加</button>
+      <button id="top">顶部</button>
+    </div>
   </div>
   <div class="wrapper">
     <div class="scrollable">
@@ -202,13 +205,17 @@
     }, false);
 
 
-    document.getElementById('button').addEventListener('click', function(e) {
+    document.getElementById('add').addEventListener('click', function(e) {
       var c = el.querySelector('.content');
       for (var i = 1; i < 5; i++) {
         var node = document.createElement('li');
         node.textContent = i;
         c.appendChild(node);
       }
+    }, false)
+
+    document.getElementById('top').addEventListener('click', function(e) {
+      el.scrollTop = 0;
     }, false)
   </script>
 </body>
