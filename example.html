@@ -88,11 +88,16 @@
       text-align: center;
       background-color: #fff;
     }
+    #l1, #l2 {
+      width: 50%;
+      float: left;
+    }
   </style>
 </head>
 <body>
   <div id="indicator">
-    11
+    <div id="l1"></div>
+    <div id="l2"></div>
   </div>
   <div class="wrapper">
     <div class="scrollable">
@@ -192,7 +197,7 @@
 
     var is = iscroll(el);
     el.addEventListener('scroll', function(e) {
-      document.getElementById('indicator').textContent = e.detail ;
+      //document.getElementById('indicator').textContent = e.detail ;
     }, false);
 
   </script>

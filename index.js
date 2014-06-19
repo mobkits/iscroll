@@ -33,26 +33,14 @@ Iscroll.prototype.bind = function () {
    // W3C touch events
   this.events.bind('touchstart');
   this.events.bind('touchmove');
-  this.events.bind('touchmove', 'calcluateSpeed');
   this.docEvents.bind('touchend');
 
 }
 
-Iscroll.prototype.calcluateSpeed = throttle(function (e) {
-  if (!this.down || this.leftright) return;
-  var touch = this.getTouch(e);
-  var y = touch.pageY;
-  var ts = now();
-  var duration = ts - this.ts;
-  var speed = this.speed = Math.abs((y - this.pageY)/(ts - this.ts));
-  this.pageY = y;
-  this.ts = ts;
-}, 100)
-
 Iscroll.prototype.refresh = function () {
   var sh = this.el.scrollHeight;
   var h = parseInt(styles(this.el).height, 10);
-  if (sh >= h) {
+  if (sh !== h) {
     this.el.style.height = sh + 'px';
   }
   this.height = sh;
@@ -115,24 +103,43 @@ Iscroll.prototype.ontouchmove = frame(function (e) {
       this.leftright = false;
     }
   }
+
+  //calculate speed every 100 milisecond
+  this.calcuteSpeed(y);
   var start = this.down.start;
   var dest = this.restrict(start + this.dy);
   this.translate(dest);
 })
 
-Iscroll.prototype.ontouchend = function (e) {
-  e.stopPropagation();
-  if (!this.down || !this.speed) return;
-  var touch = this.getTouch(e);
-  var m = this.momentum(touch.pageY - this.pageY);
-  this.scrollTo(m.dest, m.duration);
-  this.emit('release', this.y);
+Iscroll.prototype.calcuteSpeed = function (y) {
+  var ts = now();
+  this.ts = this.ts || this.down.at;
+  this.pageY = (this.pageY == null) ? this.down.y : this.pageY;
+  var dt = ts - this.ts;
+  if (ts - this.down.at < 100) {
+    this.distance = y - this.pageY;
+    this.speed = Math.abs(this.distance/dt);
+  } else if(dt > 50){
+    this.distance = y - this.pageY;
+    this.speed = Math.abs(this.distance/dt);
+    this.ts = ts;
+    this.pageY = y;
+  }
 }
 
-Iscroll.prototype.momentum = function (distance) {
-  var deceleration = 0.0008;
+Iscroll.prototype.ontouchend = function (e) {
+  e.stopPropagation();
+  if (!this.down) return;
+  var touch = this.getTouch(e);
+  this.emit('release', this.y);
+  this.calcuteSpeed(touch.pageY);
+  var m = this.momentum();
+  this.scrollTo(m.dest, m.duration);
+}
+Iscroll.prototype.momentum = function () {
+  var deceleration = 0.0004;
   var speed = this.speed;
-  var destination = this.y + ( speed * speed ) / ( 2 * deceleration ) * ( distance < 0 ? -1 : 1 );
+  var destination = this.y + ( speed * speed ) / ( 2 * deceleration ) * ( this.distance < 0 ? -1 : 1 );
   var duration = speed / deceleration;
   var newY;
   if (destination > 0) {
@@ -147,7 +154,7 @@ Iscroll.prototype.momentum = function (distance) {
   if (this.y > 0 || this.y < this.viewHeight - this.height) {
     duration = 500;
   }
-  var easing = 'out-quad';
+  var easing = 'out-circ';
   return {
     dest: destination,
     duration: duration
@@ -226,6 +233,7 @@ Iscroll.prototype.transitionDuration = function(ms){
 
 Iscroll.prototype.translate = function(y) {
   var s = this.el.style;
+  if (isNaN(y)) return;
   if (this.y !== y) {
     this.y = y;
     //only way for android 2.x to dispatch custom event
