@@ -1336,14 +1336,28 @@ var now = Date.now || function () {
   return (new Date()).getTime();
 }
 
+function lastVisible(el) {
+  var nodes = el.childNodes;
+  for(var i = nodes.length - 1; i >=0; i --) {
+    var node = nodes[i];
+    if (node.nodeType === 1 && node.style.display !== 'none') {
+      return node;
+    }
+  }
+}
+
 
 function Iscroll(el) {
   if (! (this instanceof Iscroll)) return new Iscroll(el);
+  this.y = 0;
   this.el = el;
   this.touchAction('none');
   this.refresh();
   this.bind();
-  this.viewHeight = parseInt(styles(this.el.parentNode).height, 10);
+  var self = this;
+  this.el.__defineGetter__('scrollTop', function(){
+    return - self.y;
+  })
 }
 
 Emitter(Iscroll.prototype);
@@ -1355,29 +1369,26 @@ Iscroll.prototype.bind = function () {
    // W3C touch events
   this.events.bind('touchstart');
   this.events.bind('touchmove');
-  this.events.bind('touchmove', 'calcluateSpeed');
   this.docEvents.bind('touchend');
-
 }
 
-Iscroll.prototype.calcluateSpeed = throttle(function (e) {
-  if (!this.down || this.leftright) return;
-  var touch = this.getTouch(e);
-  var y = touch.pageY;
-  var ts = now();
-  var duration = ts - this.ts;
-  var speed = this.speed = Math.abs((y - this.pageY)/(ts - this.ts));
-  this.pageY = y;
-  this.ts = ts;
-}, 100)
-
+/**
+ * recalculate height
+ *
+ * @api public
+ */
 Iscroll.prototype.refresh = function () {
-  var sh = this.el.scrollHeight;
+  var child = lastVisible(this.el);
+  this.viewHeight = parseInt(styles(this.el.parentNode).height, 10);
+  var cb = child.getBoundingClientRect().bottom;
+  var b = this.el.getBoundingClientRect().bottom;
   var h = parseInt(styles(this.el).height, 10);
-  if (sh >= h) {
-    this.el.style.height = sh + 'px';
+  if (b - cb !== 0) {
+    this.height = h + (cb - b);
+  } else {
+    this.height = h;
   }
-  this.height = sh;
+  this.el.style.height = this.height + 'px';
 }
 
 Iscroll.prototype.unbind = function () {
@@ -1395,7 +1406,6 @@ Iscroll.prototype.ontouchstart = function (e) {
   this.speed = null;
   if (this.tween) this.tween.stop();
   this.refresh();
-  this.transitionDuration(0);
   this.dy = 0;
   this.ts = now();
   this.leftright = null;
@@ -1405,7 +1415,7 @@ Iscroll.prototype.ontouchstart = function (e) {
   this.down = {
     x: touch.pageX,
     y: touch.pageY,
-    start: (this.y || 0),
+    start: this.y,
     at: now()
   };
 }
@@ -1417,14 +1427,13 @@ Iscroll.prototype.ontouchmove = frame(function (e) {
   if (!touch) {
     return;
   }
-  e.preventDefault();
 
   var down = this.down;
   var y = touch.pageY;
   this.dy = y - down.y;
 
   // determine dy and the slope
-  if (null == this.updown) {
+  if (null == this.leftright) {
     var x = touch.pageX;
     var dx = x - down.x;
     var slope = dx / this.dy;
@@ -1437,24 +1446,44 @@ Iscroll.prototype.ontouchmove = frame(function (e) {
       this.leftright = false;
     }
   }
+  e.preventDefault();
+
+  //calculate speed every 100 milisecond
+  this.calcuteSpeed(y);
   var start = this.down.start;
   var dest = this.restrict(start + this.dy);
   this.translate(dest);
 })
 
-Iscroll.prototype.ontouchend = function (e) {
-  e.stopPropagation();
-  if (!this.down || !this.speed) return;
-  var touch = this.getTouch(e);
-  var m = this.momentum(touch.pageY - this.pageY);
-  this.scrollTo(m.dest, m.duration);
-  this.emit('release', this.y);
+Iscroll.prototype.calcuteSpeed = function (y) {
+  var ts = now();
+  this.ts = this.ts || this.down.at;
+  this.pageY = (this.pageY == null) ? this.down.y : this.pageY;
+  var dt = ts - this.ts;
+  if (ts - this.down.at < 100) {
+    this.distance = y - this.pageY;
+    this.speed = Math.abs(this.distance/dt);
+  } else if(dt > 50){
+    this.distance = y - this.pageY;
+    this.speed = Math.abs(this.distance/dt);
+    this.ts = ts;
+    this.pageY = y;
+  }
 }
 
-Iscroll.prototype.momentum = function (distance) {
-  var deceleration = 0.0008;
+Iscroll.prototype.ontouchend = function (e) {
+  if (!this.down || this.leftright) return;
+  var touch = this.getTouch(e);
+  this.emit('release', this.y);
+  this.calcuteSpeed(touch.pageY);
+  var m = this.momentum();
+  this.scrollTo(m.dest, m.duration);
+}
+
+Iscroll.prototype.momentum = function () {
+  var deceleration = 0.0005;
   var speed = this.speed;
-  var destination = this.y + ( speed * speed ) / ( 2 * deceleration ) * ( distance < 0 ? -1 : 1 );
+  var destination = this.y + ( speed * speed ) / ( 2 * deceleration ) * ( this.distance < 0 ? -1 : 1 );
   var duration = speed / deceleration;
   var newY;
   if (destination > 0) {
@@ -1469,7 +1498,6 @@ Iscroll.prototype.momentum = function (distance) {
   if (this.y > 0 || this.y < this.viewHeight - this.height) {
     duration = 500;
   }
-  var easing = 'out-quad';
   return {
     dest: destination,
     duration: duration
@@ -1484,7 +1512,7 @@ Iscroll.prototype.scrollTo = function (y, duration, easing) {
     return this.translate(y);
   }
 
-  easing = easing || 'out-quad';
+  easing = easing || 'out-circ';
   var tween = this.tween = Tween({y : this.y})
       .ease(easing)
       .to({y: y})
@@ -1524,20 +1552,6 @@ Iscroll.prototype.getTouch = function(e){
   return touch;
 }
 
-/**
- * Set transition duration.
- *
- * @api private
- */
-
-Iscroll.prototype.transitionDuration = function(ms){
-  var s = this.el.style;
-  s.webkitTransition = ms + 'ms -webkit-transform';
-  s.MozTransition = ms + 'ms -moz-transform';
-  s.msTransition = ms + 'ms -ms-transform';
-  s.OTransition = ms + 'ms -o-transform';
-  s.transition = ms + 'ms transform';
-}
 
 /**
  * Translate to `x`.
@@ -1548,6 +1562,8 @@ Iscroll.prototype.transitionDuration = function(ms){
 
 Iscroll.prototype.translate = function(y) {
   var s = this.el.style;
+  if (isNaN(y)) return;
+  y = Math.floor(y);
   if (this.y !== y) {
     this.y = y;
     //only way for android 2.x to dispatch custom event
@@ -1560,19 +1576,6 @@ Iscroll.prototype.translate = function(y) {
   } else {
     s.webKitTransform = 'translateY(' + y + 'px)';
   }
-}
-
-/**
- * Set transition duration to `ms`.
- *
- * @param {Number} ms
- * @return {Swipe} self
- * @api public
- */
-
-Iscroll.prototype.duration = function(ms){
-  this._duration = ms;
-  return this;
 }
 
 /**

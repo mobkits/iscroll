@@ -63,8 +63,10 @@
       color: #00A0E9;
     }
     .scrollable {
-      width: 100%;
       position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
       overflow-y: scroll;
       -webkit-user-select: none;
       -moz-user-select: none;
@@ -86,11 +88,16 @@
       text-align: center;
       background-color: #fff;
     }
+    #indicator > * {
+      width: 50%;
+      float: left;
+    }
   </style>
 </head>
 <body>
   <div id="indicator">
-    11
+    <div id="log"></div>
+    <div><button id="button">添加</button></div>
   </div>
   <div class="wrapper">
     <div class="scrollable">
@@ -187,17 +194,22 @@
   <script>
     var iscroll = require('iscroll');
     var el = document.querySelector('.scrollable');
-    var is = iscroll(el);
 
+    var is = iscroll(el);
+    var log = document.getElementById('log');
     el.addEventListener('scroll', function(e) {
-      document.getElementById('indicator').textContent = e.detail ;
+      log.textContent = el.scrollTop;
     }, false);
 
-    is.on('release', function(y) {
-      if (y > 60) {
-        is.scrollTo(60, 100);
+
+    document.getElementById('button').addEventListener('click', function(e) {
+      var c = el.querySelector('.content');
+      for (var i = 1; i < 5; i++) {
+        var node = document.createElement('li');
+        node.textContent = i;
+        c.appendChild(node);
       }
-    })
+    }, false)
   </script>
 </body>
 </html>
