@@ -88,7 +88,7 @@
       text-align: center;
       background-color: #fff;
     }
-    #l1, #l2 {
+    #indicator > * {
       width: 50%;
       float: left;
     }
@@ -96,8 +96,8 @@
 </head>
 <body>
   <div id="indicator">
-    <div id="l1"></div>
-    <div id="l2"></div>
+    <div id="log"></div>
+    <div><button id="button">添加</button></div>
   </div>
   <div class="wrapper">
     <div class="scrollable">
@@ -196,10 +196,20 @@
     var el = document.querySelector('.scrollable');
 
     var is = iscroll(el);
+    var log = document.getElementById('log');
     el.addEventListener('scroll', function(e) {
-      //document.getElementById('indicator').textContent = e.detail ;
+      log.textContent = el.scrollTop;
     }, false);
 
+
+    document.getElementById('button').addEventListener('click', function(e) {
+      var c = el.querySelector('.content');
+      for (var i = 1; i < 5; i++) {
+        var node = document.createElement('li');
+        node.textContent = i;
+        c.appendChild(node);
+      }
+    }, false)
   </script>
 </body>
 </html>

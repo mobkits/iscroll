@@ -4,6 +4,8 @@ Make element scroll on android `scroll` event is fired with `e.detail === transl
 
 The only target platform is **Android > 2.3**
 
+Instead of making the library works every where, the goal is **high performance** and easy to use, while keep the code simplity.
+
 TODO: add scrollbar.
 
 [demo](http://chemzqm.github.io/iscroll/)
