@@ -4,7 +4,6 @@ var events = require('events');
 var styles = require('computed-style');
 var transform = require('transform-property');
 var frame = require('per-frame');
-var throttle = require('throttle');
 var Emitter = require('emitter');
 var raf = require('raf');
 var Tween = require('tween');

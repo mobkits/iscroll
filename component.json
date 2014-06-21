@@ -8,7 +8,6 @@
   "dependencies": {
     "component/has-translate3d": "*",
     "component/touchaction-property": "*",
-    "component/throttle": "*",
     "component/events": "*",
     "component/raf": "*",
     "component/tween": "*",
