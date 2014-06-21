@@ -127,40 +127,6 @@ function touchActionProperty(doc) {
 
 });
 
-require.register("component~throttle@0.0.2", function (exports, module) {
-
-/**
- * Module exports.
- */
-
-module.exports = throttle;
-
-/**
- * Returns a new function that, when invoked, invokes `func` at most one time per
- * `wait` milliseconds.
- *
- * @param {Function} func The `Function` instance to wrap.
- * @param {Number} wait The minimum number of milliseconds that must elapse in between `func` invokations.
- * @return {Function} A new function that wraps the `func` function passed in.
- * @api public
- */
-
-function throttle (func, wait) {
-  var rtn; // return value
-  var last = 0; // last invokation timestamp
-  return function throttled () {
-    var now = new Date().getTime();
-    var delta = now - last;
-    if (delta >= wait) {
-      rtn = func.apply(this, arguments);
-      last = now;
-    }
-    return rtn;
-  };
-}
-
-});
-
 require.register("component~event@0.1.3", function (exports, module) {
 var bind = window.addEventListener ? 'addEventListener' : 'attachEvent',
     unbind = window.removeEventListener ? 'removeEventListener' : 'detachEvent',
@@ -1256,46 +1222,6 @@ function clone(obj) {
 
 });
 
-require.register("component~per-frame@2.0.1", function (exports, module) {
-/**
- * Module Dependencies.
- */
-
-var raf = require("component~raf@1.1.3");
-
-/**
- * Export `throttle`.
- */
-
-module.exports = throttle;
-
-/**
- * Executes a function at most once per animation frame. Kind of like
- * throttle, but it throttles at ~60Hz.
- *
- * @param {Function} fn - the Function to throttle once per animation frame
- * @return {Function}
- * @public
- */
-
-function throttle(fn) {
-  var queued = false;
-
-  return function queue() {
-    if (queued) return;
-    queued = true;
-    var ctx = this;
-    var args = arguments;
-
-    raf(function() {
-      queued = false;
-      return fn.apply(ctx, args);
-    });
-  };
-}
-
-});
-
 require.register("chemzqm~computed-style@0.1.1", function (exports, module) {
 
 /**
@@ -1325,8 +1251,6 @@ var touchAction = require("component~touchaction-property@0.0.1");
 var events = require("component~events@1.0.7");
 var styles = require("chemzqm~computed-style@0.1.1");
 var transform = require("component~transform-property@0.0.1");
-var frame = require("component~per-frame@2.0.1");
-var throttle = require("component~throttle@0.0.2");
 var Emitter = require("component~emitter@1.1.2");
 var raf = require("component~raf@1.1.3");
 var Tween = require("component~tween@1.1.0");
@@ -1424,10 +1348,11 @@ Iscroll.prototype.ontouchstart = function (e) {
   };
 }
 
-Iscroll.prototype.ontouchmove = frame(function (e) {
+Iscroll.prototype.ontouchmove = function (e) {
+  e.preventDefault();
+  console.log(123);
   if (!this.down || this.leftright) return;
   var touch = this.getTouch(e);
-  e.preventDefault();
   // TODO: ignore more than one finger
   if (!touch) {
     return;
@@ -1457,7 +1382,7 @@ Iscroll.prototype.ontouchmove = frame(function (e) {
   var start = this.down.start;
   var dest = this.restrict(start + this.dy);
   this.translate(dest);
-})
+}
 
 Iscroll.prototype.calcuteSpeed = function (y) {
   var ts = now();
