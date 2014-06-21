@@ -18,7 +18,9 @@
     "chemzqm/computed-style": "*"
   },
   "development": {
-    "dependencies": {}
+    "dependencies": {
+      "chemzqm/ismobile": "*"
+    }
   },
   "license": "MIT",
   "main": "index.js",
