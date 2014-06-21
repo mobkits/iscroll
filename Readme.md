@@ -1,10 +1,12 @@
 # iscroll
 
-Make element scroll on android `scroll` event is fired with `e.detail === translateY` when scrolling.
+Make element scrollable on android `scroll` event is fired and `el.scrollTop` is the value of scrolled top distance when scrolling.
 
-The only target platform is **Android > 2.3**
+For most times, what you need to do is init that instance by `iscroll(el)`, it would works as a scrollable element if you only need `scroll` event and `el.scrollTop`
 
 Instead of making the library works every where, the goal is **high performance** and easy to use, while keep the code simplity.
+
+Tested on **Android > 2.2**.
 
 TODO: add scrollbar.
 
@@ -18,15 +20,11 @@ Install with [component(1)](http://component.io):
 
 ## Example
 
+
 ```js
 var Iscroll = require('iscroll');
 var el = document.getElementById('scrollable');
 var scroll = new Iscroll(el);
-
-scroll.on('release', function(y) {
-  console.log(el.scrollTop);
-})
-
 el.addEventListener('scroll', function(e) {
   console.log(el.scrollTop);
 }, false);
