@@ -246,6 +246,7 @@ Iscroll.prototype.translate = function(y) {
   var s = this.el.style;
   if (isNaN(y)) return;
   y = Math.floor(y);
+  //reach the end
   if (this.y !== y) {
     this.y = y;
     //only way for android 2.x to dispatch custom event
