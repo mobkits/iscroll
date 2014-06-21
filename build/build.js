@@ -1454,7 +1454,6 @@ Iscroll.prototype.ontouchstart = function (e) {\n\
 \n\
 Iscroll.prototype.ontouchmove = function (e) {\n\
   e.preventDefault();\n\
-  console.log(123);\n\
   if (!this.down || this.leftright) return;\n\
   var touch = this.getTouch(e);\n\
   // TODO: ignore more than one finger\n\
