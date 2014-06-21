@@ -1351,6 +1351,7 @@ function Iscroll(el) {
   if (! (this instanceof Iscroll)) return new Iscroll(el);
   this.y = 0;
   this.el = el;
+  this.pb = parseInt(styles(el).getPropertyValue('padding-bottom'), 10);
   this.touchAction('none');
   this.refresh();
   this.bind();
@@ -1387,9 +1388,9 @@ Iscroll.prototype.refresh = function () {
   var b = this.el.getBoundingClientRect().bottom;
   var h = parseInt(styles(this.el).height, 10);
   if (b - cb !== 0) {
-    this.height = h + (cb - b);
+    this.height = h + (cb - b) + this.pb;
   } else {
-    this.height = h;
+    this.height = h + this.pb;
   }
   this.el.style.height = this.height + 'px';
 }
@@ -1426,6 +1427,7 @@ Iscroll.prototype.ontouchstart = function (e) {
 Iscroll.prototype.ontouchmove = frame(function (e) {
   if (!this.down || this.leftright) return;
   var touch = this.getTouch(e);
+  e.preventDefault();
   // TODO: ignore more than one finger
   if (!touch) {
     return;
@@ -1449,7 +1451,6 @@ Iscroll.prototype.ontouchmove = frame(function (e) {
       this.leftright = false;
     }
   }
-  e.preventDefault();
 
   //calculate speed every 100 milisecond
   this.calcuteSpeed(y);
@@ -1510,7 +1511,7 @@ Iscroll.prototype.momentum = function () {
 
 Iscroll.prototype.scrollTo = function (y, duration, easing) {
   if (this.tween) this.tween.stop();
-  var intransition = duration > 0;
+  var intransition = (duration > 0 && y !== this.y);
   if (!intransition) {
     return this.translate(y);
   }
@@ -1567,6 +1568,7 @@ Iscroll.prototype.translate = function(y) {
   var s = this.el.style;
   if (isNaN(y)) return;
   y = Math.floor(y);
+  //reach the end
   if (this.y !== y) {
     this.y = y;
     //only way for android 2.x to dispatch custom event

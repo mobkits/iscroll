@@ -61,12 +61,9 @@
       color: #333;
       line-height: 30px;
       color: #00A0E9;
+      padding: 10px 0;
     }
     .scrollable {
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
       overflow-y: scroll;
       -webkit-user-select: none;
       -moz-user-select: none;
@@ -96,10 +93,10 @@
 </head>
 <body>
   <div id="indicator">
-    <div id="log"></div>
+    <div id="log">0</div>
     <div>
-      <button id="add">添加</button>
-      <button id="top">顶部</button>
+      <button id="add">add</button>
+      <button id="top">top</button>
     </div>
   </div>
   <div class="wrapper">
@@ -195,6 +192,10 @@
   </div>
   <script src="build/build.js"></script>
   <script>
+    var ismobile = require('ismobile');
+    if (!ismobile) {
+      alert('only support android device');
+    }
     var iscroll = require('iscroll');
     var el = document.querySelector('.scrollable');
 
