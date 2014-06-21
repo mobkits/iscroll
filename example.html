@@ -64,7 +64,7 @@
       padding: 10px 0;
     }
     .scrollable {
-      overflow-y: hidden;
+      position: relative;
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
@@ -72,12 +72,12 @@
       -webkit-overflow-scrolling: touch;
     }
     .wrapper {
-      overflow: hidden;
       position: fixed;
       top: 30px;
       left: 0;
       right: 0;
       bottom: 0;
+      overflow: hidden;
     }
     #indicator {
       height: 30px;
@@ -88,6 +88,13 @@
     #indicator > * {
       width: 50%;
       float: left;
+    }
+    #refresh {
+      position: absolute;
+      height: 30px;
+      width: 100%;
+      text-align: center;
+      top: -30px;
     }
   </style>
 </head>
@@ -101,6 +108,9 @@
   </div>
   <div class="wrapper">
     <div class="scrollable">
+      <div id="refresh">
+        pull to refresh
+      </div>
       <ul class="content">
           <li id="console"><strong>Pull here to try</strong></li>
           <li>Lorem ipsum dolor sit amet,</li>
