@@ -3,7 +3,6 @@ var touchAction = require('touchaction-property');
 var events = require('events');
 var styles = require('computed-style');
 var transform = require('transform-property');
-var frame = require('per-frame');
 var Emitter = require('emitter');
 var raf = require('raf');
 var Tween = require('tween');
@@ -101,10 +100,11 @@ Iscroll.prototype.ontouchstart = function (e) {
   };
 }
 
-Iscroll.prototype.ontouchmove = frame(function (e) {
+Iscroll.prototype.ontouchmove = function (e) {
+  e.preventDefault();
+  console.log(123);
   if (!this.down || this.leftright) return;
   var touch = this.getTouch(e);
-  e.preventDefault();
   // TODO: ignore more than one finger
   if (!touch) {
     return;
@@ -134,7 +134,7 @@ Iscroll.prototype.ontouchmove = frame(function (e) {
   var start = this.down.start;
   var dest = this.restrict(start + this.dy);
   this.translate(dest);
-})
+}
 
 Iscroll.prototype.calcuteSpeed = function (y) {
   var ts = now();

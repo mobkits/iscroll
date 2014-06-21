@@ -64,7 +64,7 @@
       padding: 10px 0;
     }
     .scrollable {
-      overflow-y: scroll;
+      overflow-y: hidden;
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
@@ -216,7 +216,7 @@
     }, false)
 
     document.getElementById('top').addEventListener('click', function(e) {
-      el.scrollTop = 0;
+      is.scrollTo(0, 200);
     }, false)
   </script>
 </body>

@@ -12,7 +12,6 @@
     "component/raf": "*",
     "component/tween": "*",
     "component/emitter": "*",
-    "component/per-frame": "*",
     "component/transform-property": "*",
     "chemzqm/computed-style": "*"
   },
