@@ -6,7 +6,7 @@ For most times, what you need to do is init that instance by `iscroll(el)`, it w
 
 Instead of making the library works every where, the goal is **high performance** and easy to use, while keep the code simplity.
 
-Tested on **Android > 2.2**.
+Tested on **Android > 2.2**, some webview would add a scrollbar by default, you can add `overflow:hidden` to the target element, notice that may have some side effect.
 
 We can't use custom `scrollTop` on safari, so be careful if you need to support ios.
 
