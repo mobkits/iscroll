@@ -6,6 +6,7 @@
   <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1,width=device-width, height=device-height"/>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="stylesheet" href="/build/build.css">
   <style>
     body {
       font: 500 14px/1.6 "Helvetica Neue", Helvetica, sans-serif;
@@ -64,7 +65,7 @@
       padding: 10px 0;
     }
     .scrollable {
-      overflow-y: hidden;
+      position: relative;
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
@@ -72,12 +73,12 @@
       -webkit-overflow-scrolling: touch;
     }
     .wrapper {
-      overflow: hidden;
       position: fixed;
       top: 30px;
       left: 0;
       right: 0;
       bottom: 0;
+      overflow: hidden;
     }
     #indicator {
       height: 30px;
@@ -88,6 +89,13 @@
     #indicator > * {
       width: 50%;
       float: left;
+    }
+    #refresh {
+      position: absolute;
+      height: 30px;
+      width: 100%;
+      text-align: center;
+      top: -30px;
     }
   </style>
 </head>
@@ -101,6 +109,9 @@
   </div>
   <div class="wrapper">
     <div class="scrollable">
+      <div id="refresh">
+        pull to refresh
+      </div>
       <ul class="content">
           <li id="console"><strong>Pull here to try</strong></li>
           <li>Lorem ipsum dolor sit amet,</li>
@@ -194,12 +205,14 @@
   <script>
     var ismobile = require('ismobile');
     if (!ismobile) {
-      alert('only support android device');
+      alert('only support mobile device');
     }
     var iscroll = require('iscroll');
     var el = document.querySelector('.scrollable');
 
-    var is = iscroll(el);
+    var is = iscroll(el, {
+      handlebar: true
+    });
     var log = document.getElementById('log');
     el.addEventListener('scroll', function(e) {
       log.textContent = el.scrollTop;

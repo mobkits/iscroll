@@ -755,7 +755,7 @@ require.modules["component~emitter"] = require.modules["component~emitter@1.0.0"
 require.modules["emitter"] = require.modules["component~emitter@1.0.0"];
 
 
-require.register("component~emitter@1.1.2", Function("exports, module",
+require.register("component~emitter@1.1.3", Function("exports, module",
 "\n\
 /**\n\
  * Expose `Emitter`.\n\
@@ -921,12 +921,12 @@ Emitter.prototype.hasListeners = function(event){\n\
   return !! this.listeners(event).length;\n\
 };\n\
 \n\
-//# sourceURL=components/component/emitter/1.1.2/index.js"
+//# sourceURL=components/component/emitter/1.1.3/index.js"
 ));
 
-require.modules["component-emitter"] = require.modules["component~emitter@1.1.2"];
-require.modules["component~emitter"] = require.modules["component~emitter@1.1.2"];
-require.modules["emitter"] = require.modules["component~emitter@1.1.2"];
+require.modules["component-emitter"] = require.modules["component~emitter@1.1.3"];
+require.modules["component~emitter"] = require.modules["component~emitter@1.1.3"];
+require.modules["emitter"] = require.modules["component~emitter@1.1.3"];
 
 
 require.register("component~ease@1.0.0", Function("exports, module",
@@ -1355,7 +1355,7 @@ var touchAction = require(\"component~touchaction-property@0.0.1\");\n\
 var events = require(\"component~events@1.0.7\");\n\
 var styles = require(\"chemzqm~computed-style@0.1.1\");\n\
 var transform = require(\"component~transform-property@0.0.1\");\n\
-var Emitter = require(\"component~emitter@1.1.2\");\n\
+var Emitter = require(\"component~emitter@1.1.3\");\n\
 var raf = require(\"component~raf@1.1.3\");\n\
 var Tween = require(\"component~tween@1.1.0\");\n\
 var max = Math.max;\n\
@@ -1375,8 +1375,8 @@ function lastVisible(el) {\n\
 }\n\
 \n\
 \n\
-function Iscroll(el) {\n\
-  if (! (this instanceof Iscroll)) return new Iscroll(el);\n\
+function Iscroll(el, opts) {\n\
+  if (! (this instanceof Iscroll)) return new Iscroll(el, opts);\n\
   this.y = 0;\n\
   this.el = el;\n\
   this.pb = parseInt(styles(el).getPropertyValue('padding-bottom'), 10);\n\
@@ -1390,6 +1390,12 @@ function Iscroll(el) {\n\
   this.el.__defineSetter__('scrollTop', function(v){\n\
     return self.scrollTo(v, 200);\n\
   })\n\
+  opts = opts || {};\n\
+  if (opts.handlebar) {\n\
+    var bar = this.handlebar = document.createElement('div');\n\
+    bar.className = 'iscroll-handlebar';\n\
+    this.el.parentNode.appendChild(bar);\n\
+  }\n\
 }\n\
 \n\
 Emitter(Iscroll.prototype);\n\
@@ -1479,6 +1485,7 @@ Iscroll.prototype.ontouchmove = function (e) {\n\
       this.leftright = false;\n\
     }\n\
   }\n\
+  if (this.handlebar) this.resizeHandlebar();\n\
 \n\
   //calculate speed every 100 milisecond\n\
   this.calcuteSpeed(y);\n\
@@ -1509,30 +1516,35 @@ Iscroll.prototype.ontouchend = function (e) {\n\
   this.emit('release', this.y);\n\
   this.calcuteSpeed(touch.pageY);\n\
   var m = this.momentum();\n\
-  this.scrollTo(m.dest, m.duration);\n\
+  this.scrollTo(m.dest, m.duration, m.ease);\n\
 }\n\
 \n\
 Iscroll.prototype.momentum = function () {\n\
   var deceleration = 0.0005;\n\
   var speed = this.speed;\n\
+  speed = Math.min(speed, 1);\n\
   var destination = this.y + ( speed * speed ) / ( 2 * deceleration ) * ( this.distance < 0 ? -1 : 1 );\n\
   var duration = speed / deceleration;\n\
-  var newY;\n\
+  var newY, ease;\n\
   if (destination > 0) {\n\
     newY = 0;\n\
+    ease = 'out-back';\n\
   } else if (destination < this.viewHeight - this.height) {\n\
     newY = this.viewHeight - this.height;\n\
+    ease = 'out-back';\n\
   }\n\
   if (typeof newY === 'number') {\n\
-    duration = duration*(newY - this.y)/(destination - this.y);\n\
+    duration = duration*(newY - this.y + 160)/(destination - this.y);\n\
     destination = newY;\n\
   }\n\
   if (this.y > 0 || this.y < this.viewHeight - this.height) {\n\
     duration = 500;\n\
+    ease = 'out-circ';\n\
   }\n\
   return {\n\
     dest: destination,\n\
-    duration: duration\n\
+    duration: duration,\n\
+    ease: ease\n\
   }\n\
 }\n\
 \n\
@@ -1557,6 +1569,7 @@ Iscroll.prototype.scrollTo = function (y, duration, easing) {\n\
 \n\
   tween.on('end', function () {\n\
     animate = function(){};\n\
+    self.hideHandlebar();\n\
   })\n\
 \n\
   function animate() {\n\
@@ -1603,6 +1616,7 @@ Iscroll.prototype.translate = function(y) {\n\
     var evt = document.createEvent('UIEvents');\n\
     evt.initUIEvent('scroll', false, false, true, y);\n\
     this.el.dispatchEvent(evt);\n\
+    if (this.handlebar) this.transformHandlebar();\n\
   }\n\
   if (has3d) {\n\
     s.webkitTransform = 'translate3d(0, ' + y + 'px' + ', 0)';\n\
@@ -1622,6 +1636,35 @@ Iscroll.prototype.touchAction = function(value){\n\
   if (touchAction) {\n\
     s[touchAction] = value;\n\
   }\n\
+}\n\
+\n\
+Iscroll.prototype.transformHandlebar = function(){\n\
+  var vh = this.viewHeight;\n\
+  var h = this.height;\n\
+  var bh = vh - vh * vh/h;\n\
+  var ih = h - vh;\n\
+  var y = parseInt(- bh * this.y/ih);\n\
+  var s = this.handlebar.style;\n\
+  this.handlebar.style.background = 'rgba(0,0,0,0.4)';\n\
+  if (has3d) {\n\
+    s.webkitTransform = 'translate3d(0, ' + y + 'px' + ', 0)';\n\
+  } else {\n\
+    s.webKitTransform = 'translateY(' + y + 'px)';\n\
+  }\n\
+}\n\
+\n\
+/**\n\
+ * show the handlebar and size it\n\
+ * @api public\n\
+ */\n\
+Iscroll.prototype.resizeHandlebar = function(){\n\
+  var h = this.viewHeight * this.viewHeight/this.height;\n\
+  this.handlebar.style.height = h + 'px';\n\
+  this.handlebar.style.backgroundColor = 'rgba(0,0,0,0.4)';\n\
+}\n\
+\n\
+Iscroll.prototype.hideHandlebar = function () {\n\
+  if (this.handlebar) this.handlebar.style.backgroundColor = 'transparent';\n\
 }\n\
 \n\
 module.exports = Iscroll;\n\
