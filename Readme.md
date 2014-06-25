@@ -10,9 +10,9 @@ Tested on **Android > 2.2**, some webview would add a scrollbar by default, you 
 
 We can't use custom `scrollTop` on safari, so be careful if you need to support ios.
 
-TODO: add scrollbar.
-
 [demo](http://chemzqm.github.io/iscroll/)
+
+[click here](https://github.com/chemzqm/iscroll/blob/master/supported.tsv) to see what device/os_version should be supported.
 
 ## Installation
 
