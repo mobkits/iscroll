@@ -157,30 +157,35 @@ Iscroll.prototype.ontouchend = function (e) {
   this.emit('release', this.y);
   this.calcuteSpeed(touch.pageY);
   var m = this.momentum();
-  this.scrollTo(m.dest, m.duration);
+  this.scrollTo(m.dest, m.duration, m.ease);
 }
 
 Iscroll.prototype.momentum = function () {
   var deceleration = 0.0005;
   var speed = this.speed;
+  speed = Math.min(speed, 1);
   var destination = this.y + ( speed * speed ) / ( 2 * deceleration ) * ( this.distance < 0 ? -1 : 1 );
   var duration = speed / deceleration;
-  var newY;
+  var newY, ease;
   if (destination > 0) {
     newY = 0;
+    ease = 'out-back';
   } else if (destination < this.viewHeight - this.height) {
     newY = this.viewHeight - this.height;
+    ease = 'out-back';
   }
   if (typeof newY === 'number') {
-    duration = duration*(newY - this.y)/(destination - this.y);
+    duration = duration*(newY - this.y + 160)/(destination - this.y);
     destination = newY;
   }
   if (this.y > 0 || this.y < this.viewHeight - this.height) {
     duration = 500;
+    ease = 'out-circ';
   }
   return {
     dest: destination,
-    duration: duration
+    duration: duration,
+    ease: ease
   }
 }
 
