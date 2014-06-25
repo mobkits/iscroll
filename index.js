@@ -23,8 +23,8 @@ function lastVisible(el) {
 }
 
 
-function Iscroll(el) {
-  if (! (this instanceof Iscroll)) return new Iscroll(el);
+function Iscroll(el, opts) {
+  if (! (this instanceof Iscroll)) return new Iscroll(el, opts);
   this.y = 0;
   this.el = el;
   this.pb = parseInt(styles(el).getPropertyValue('padding-bottom'), 10);
@@ -38,6 +38,12 @@ function Iscroll(el) {
   this.el.__defineSetter__('scrollTop', function(v){
     return self.scrollTo(v, 200);
   })
+  opts = opts || {};
+  if (opts.handlebar) {
+    var bar = this.handlebar = document.createElement('div');
+    bar.className = 'iscroll-handlebar';
+    this.el.parentNode.appendChild(bar);
+  }
 }
 
 Emitter(Iscroll.prototype);
@@ -127,6 +133,7 @@ Iscroll.prototype.ontouchmove = function (e) {
       this.leftright = false;
     }
   }
+  if (this.handlebar) this.resizeHandlebar();
 
   //calculate speed every 100 milisecond
   this.calcuteSpeed(y);
@@ -210,6 +217,7 @@ Iscroll.prototype.scrollTo = function (y, duration, easing) {
 
   tween.on('end', function () {
     animate = function(){};
+    self.hideHandlebar();
   })
 
   function animate() {
@@ -256,6 +264,7 @@ Iscroll.prototype.translate = function(y) {
     var evt = document.createEvent('UIEvents');
     evt.initUIEvent('scroll', false, false, true, y);
     this.el.dispatchEvent(evt);
+    if (this.handlebar) this.transformHandlebar();
   }
   if (has3d) {
     s.webkitTransform = 'translate3d(0, ' + y + 'px' + ', 0)';
@@ -275,6 +284,35 @@ Iscroll.prototype.touchAction = function(value){
   if (touchAction) {
     s[touchAction] = value;
   }
+}
+
+Iscroll.prototype.transformHandlebar = function(){
+  var vh = this.viewHeight;
+  var h = this.height;
+  var bh = vh - vh * vh/h;
+  var ih = h - vh;
+  var y = parseInt(- bh * this.y/ih);
+  var s = this.handlebar.style;
+  this.handlebar.style.background = 'rgba(0,0,0,0.4)';
+  if (has3d) {
+    s.webkitTransform = 'translate3d(0, ' + y + 'px' + ', 0)';
+  } else {
+    s.webKitTransform = 'translateY(' + y + 'px)';
+  }
+}
+
+/**
+ * show the handlebar and size it
+ * @api public
+ */
+Iscroll.prototype.resizeHandlebar = function(){
+  var h = this.viewHeight * this.viewHeight/this.height;
+  this.handlebar.style.height = h + 'px';
+  this.handlebar.style.backgroundColor = 'rgba(0,0,0,0.4)';
+}
+
+Iscroll.prototype.hideHandlebar = function () {
+  if (this.handlebar) this.handlebar.style.backgroundColor = 'transparent';
 }
 
 module.exports = Iscroll;

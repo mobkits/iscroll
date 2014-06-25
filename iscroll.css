@@ -1,0 +1,12 @@
+.iscroll-handlebar {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  -webkit-transition: 0.01s linear;
+  transition: 0.15s linear;
+  width: 4px;
+  border-radius: 2px;
+  background-color: rgba(0, 0, 0, 0);
+  z-index: 99999;
+  height: 30px;
+}
