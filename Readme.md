@@ -14,6 +14,10 @@ We can't use custom `scrollTop` on safari, so be careful if you need to support 
 
 [click here](https://github.com/chemzqm/iscroll/blob/master/supported.tsv) to see what device/os_version should be supported.
 
+## Known issue
+
+* not works well on some old device when the device is not fully started (eg: CoolPad8070)
+
 ## Installation
 
 Install with [component(1)](http://component.io):
