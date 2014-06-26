@@ -11,6 +11,7 @@ var min = Math.min;
 var now = Date.now || function () {
   return (new Date()).getTime();
 }
+var getterAndSetter = (typeof Object.__defineGetter__ === 'function' && typeof Object.__defineSetter__ === 'function');
 
 function lastVisible(el) {
   var nodes = el.childNodes;
@@ -32,12 +33,14 @@ function Iscroll(el, opts) {
   this.refresh();
   this.bind();
   var self = this;
-  this.el.__defineGetter__('scrollTop', function(){
-    return - self.y;
-  })
-  this.el.__defineSetter__('scrollTop', function(v){
-    return self.scrollTo(v, 200);
-  })
+  if (getterAndSetter) {
+    this.__defineGetter__('scrollTop', function(){
+      return - self.y;
+    })
+    this.__defineSetter__('scrollTop', function(v){
+      return self.scrollTo(v, 200);
+    })
+  }
   opts = opts || {};
   if (opts.handlebar) {
     var bar = this.handlebar = document.createElement('div');
