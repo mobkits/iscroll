@@ -11,6 +11,10 @@ clean:
 watch:
 	@component build --dev -w
 
+standalone:
+	@component build -c
+	@cp build/build.js iscroll.js
+
 doc:
 	@component build --dev
 	@rm -fr .gh-pages
