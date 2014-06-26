@@ -205,7 +205,7 @@ Iscroll.prototype.scrollTo = function (y, duration, easing) {
   if (this.tween) this.tween.stop();
   var intransition = (duration > 0 && y !== this.y);
   if (!intransition) {
-    self.onscrollEnd();
+    this.onscrollEnd();
     return this.translate(y);
   }
 
