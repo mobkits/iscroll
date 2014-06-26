@@ -174,7 +174,7 @@ Iscroll.prototype.ontouchend = function (e) {
 Iscroll.prototype.momentum = function () {
   var deceleration = 0.0005;
   var speed = this.speed;
-  speed = Math.min(speed, 1);
+  speed = min(speed, 1.1);
   var destination = this.y + ( speed * speed ) / ( 2 * deceleration ) * ( this.distance < 0 ? -1 : 1 );
   var duration = speed / deceleration;
   var newY, ease;
@@ -221,7 +221,9 @@ Iscroll.prototype.scrollTo = function (y, duration, easing) {
 
   tween.on('end', function () {
     animate = function(){};
-    self.hideHandlebar();
+    if (!tween.stopped) {
+      self.onScrollEnd();
+    }
   })
 
   function animate() {
@@ -230,6 +232,16 @@ Iscroll.prototype.scrollTo = function (y, duration, easing) {
   }
 
   animate();
+}
+
+Iscroll.prototype.onScrollEnd = function () {
+  this.hideHandlebar();
+  var top = this.y === 0;
+  var bottom = this.y === (this.viewHeight - this.height);
+  this.emit('scrollend', {
+    top: top,
+    bottom: bottom
+  })
 }
 
 /**
@@ -264,10 +276,7 @@ Iscroll.prototype.translate = function(y) {
   //reach the end
   if (this.y !== y) {
     this.y = y;
-    //only way for android 2.x to dispatch custom event
-    var evt = document.createEvent('UIEvents');
-    evt.initUIEvent('scroll', false, false, true, y);
-    this.el.dispatchEvent(evt);
+    this.emit('scroll', - y);
     if (this.handlebar) this.transformHandlebar();
   }
   if (has3d) {
@@ -311,7 +320,7 @@ Iscroll.prototype.transformHandlebar = function(){
 Iscroll.prototype.resizeHandlebar = function(){
   var h = this.viewHeight * this.viewHeight/this.height;
   this.handlebar.style.height = h + 'px';
-  this.handlebar.style.background = 'rgba(0,0,0,0.3)';
+  this.handlebar.style.backgroundColor = 'rgba(0,0,0,0.3)';
 }
 
 Iscroll.prototype.hideHandlebar = function () {
