@@ -16,7 +16,9 @@ Tested on **Android > 2.2** and **IOS > 6**, some webview would add a scrollbar 
 
 ## Installation
 
-Install with [component(1)](http://component.io):
+Include file [iscroll.js](https://raw.githubusercontent.com/chemzqm/iscroll/master/iscroll.js) and [iscroll.css](https://raw.githubusercontent.com/chemzqm/iscroll/master/iscroll.css) if you want to use standalone version.
+
+Or install with [component(1)](http://component.io):
 
     $ component install chemzqm/iscroll
 
