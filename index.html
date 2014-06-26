@@ -214,9 +214,14 @@
       handlebar: true
     });
     var log = document.getElementById('log');
-    el.addEventListener('scroll', function(e) {
-      log.textContent = el.scrollTop;
+
+    is.on('scroll', function(y) {
+      log.textContent = y;
     }, false);
+
+    is.on('scrollend', function(e) {
+      console.log(e);
+    })
 
 
     document.getElementById('add').addEventListener('click', function(e) {

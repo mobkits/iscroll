@@ -1363,6 +1363,7 @@ var min = Math.min;\n\
 var now = Date.now || function () {\n\
   return (new Date()).getTime();\n\
 }\n\
+var getterAndSetter = (typeof Object.__defineGetter__ === 'function' && typeof Object.__defineSetter__ === 'function');\n\
 \n\
 function lastVisible(el) {\n\
   var nodes = el.childNodes;\n\
@@ -1384,12 +1385,14 @@ function Iscroll(el, opts) {\n\
   this.refresh();\n\
   this.bind();\n\
   var self = this;\n\
-  this.el.__defineGetter__('scrollTop', function(){\n\
-    return - self.y;\n\
-  })\n\
-  this.el.__defineSetter__('scrollTop', function(v){\n\
-    return self.scrollTo(v, 200);\n\
-  })\n\
+  if (getterAndSetter) {\n\
+    this.__defineGetter__('scrollTop', function(){\n\
+      return - self.y;\n\
+    })\n\
+    this.__defineSetter__('scrollTop', function(v){\n\
+      return self.scrollTo(v, 200);\n\
+    })\n\
+  }\n\
   opts = opts || {};\n\
   if (opts.handlebar) {\n\
     var bar = this.handlebar = document.createElement('div');\n\
@@ -1447,6 +1450,7 @@ Iscroll.prototype.ontouchstart = function (e) {\n\
   this.dy = 0;\n\
   this.ts = now();\n\
   this.leftright = null;\n\
+  if (this.handlebar) this.resizeHandlebar();\n\
 \n\
   var touch = this.getTouch(e);\n\
   this.pageY = touch.pageY;\n\
@@ -1480,12 +1484,12 @@ Iscroll.prototype.ontouchmove = function (e) {\n\
     // if is greater than 1 or -1, we're swiping up/down\n\
     if (slope > 1 || slope < -1) {\n\
       this.leftright = true;\n\
+      if (this.handlebar) this.hideHandlebar();\n\
       return;\n\
     } else {\n\
       this.leftright = false;\n\
     }\n\
   }\n\
-  if (this.handlebar) this.resizeHandlebar();\n\
 \n\
   //calculate speed every 100 milisecond\n\
   this.calcuteSpeed(y);\n\
@@ -1522,7 +1526,7 @@ Iscroll.prototype.ontouchend = function (e) {\n\
 Iscroll.prototype.momentum = function () {\n\
   var deceleration = 0.0005;\n\
   var speed = this.speed;\n\
-  speed = Math.min(speed, 1);\n\
+  speed = min(speed, 1.1);\n\
   var destination = this.y + ( speed * speed ) / ( 2 * deceleration ) * ( this.distance < 0 ? -1 : 1 );\n\
   var duration = speed / deceleration;\n\
   var newY, ease;\n\
@@ -1569,7 +1573,9 @@ Iscroll.prototype.scrollTo = function (y, duration, easing) {\n\
 \n\
   tween.on('end', function () {\n\
     animate = function(){};\n\
-    self.hideHandlebar();\n\
+    if (!tween.stopped) {\n\
+      self.onScrollEnd();\n\
+    }\n\
   })\n\
 \n\
   function animate() {\n\
@@ -1578,6 +1584,16 @@ Iscroll.prototype.scrollTo = function (y, duration, easing) {\n\
   }\n\
 \n\
   animate();\n\
+}\n\
+\n\
+Iscroll.prototype.onScrollEnd = function () {\n\
+  this.hideHandlebar();\n\
+  var top = this.y === 0;\n\
+  var bottom = this.y === (this.viewHeight - this.height);\n\
+  this.emit('scrollend', {\n\
+    top: top,\n\
+    bottom: bottom\n\
+  })\n\
 }\n\
 \n\
 /**\n\
@@ -1612,10 +1628,7 @@ Iscroll.prototype.translate = function(y) {\n\
   //reach the end\n\
   if (this.y !== y) {\n\
     this.y = y;\n\
-    //only way for android 2.x to dispatch custom event\n\
-    var evt = document.createEvent('UIEvents');\n\
-    evt.initUIEvent('scroll', false, false, true, y);\n\
-    this.el.dispatchEvent(evt);\n\
+    this.emit('scroll', - y);\n\
     if (this.handlebar) this.transformHandlebar();\n\
   }\n\
   if (has3d) {\n\
@@ -1645,7 +1658,6 @@ Iscroll.prototype.transformHandlebar = function(){\n\
   var ih = h - vh;\n\
   var y = parseInt(- bh * this.y/ih);\n\
   var s = this.handlebar.style;\n\
-  this.handlebar.style.background = 'rgba(0,0,0,0.4)';\n\
   if (has3d) {\n\
     s.webkitTransform = 'translate3d(0, ' + y + 'px' + ', 0)';\n\
   } else {\n\
@@ -1660,7 +1672,7 @@ Iscroll.prototype.transformHandlebar = function(){\n\
 Iscroll.prototype.resizeHandlebar = function(){\n\
   var h = this.viewHeight * this.viewHeight/this.height;\n\
   this.handlebar.style.height = h + 'px';\n\
-  this.handlebar.style.backgroundColor = 'rgba(0,0,0,0.4)';\n\
+  this.handlebar.style.backgroundColor = 'rgba(0,0,0,0.3)';\n\
 }\n\
 \n\
 Iscroll.prototype.hideHandlebar = function () {\n\
