@@ -2,9 +2,9 @@
 
 Make element scrollable using touch events.
 
-Instead of making the library works every where, the goal is **high performance** and easy to use, while keep the code simplity.
+The goal of this library is **high performance** and easy to use, while keep the code simplity.
 
-Tested on **Android > 2.2**, some webview would add a scrollbar by default, you can add `overflow:hidden` to the target element, notice that may have some side effect.
+Tested on **Android > 2.2** and **IOS > 6**, some webview would add a scrollbar by default, you can add `overflow:hidden` to the target element, notice that may have some side effect.
 
 [demo](http://chemzqm.github.io/iscroll/)
 
@@ -34,11 +34,15 @@ scroll.on('scroll', function(e) {
 
 ## API
 
-`release` event is fired with y (translated) on touchend.
+* `release` event is fired with y (translated) on touchend.
 
-### iscroll(el)
+* `scroll` event is fired with y (Just as scrollTop on the element) on scroll.
 
-Init iscroll with el.
+* `scrollend` event is fired with Object containing `top` and `bottom` indicate whether the element has scrolled to top or bottom.
+
+### iscroll(el, [opts])
+
+Init iscroll with el and optional opts, set `opts.handlebar` to true if you want handlebar.
 
 ### .refresh()
 
