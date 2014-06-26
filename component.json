@@ -2,7 +2,7 @@
   "name": "iscroll",
   "repository": "chemzqm/iscroll",
   "description": "simulate scroll for android",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "keywords": [],
   "demo": "http://chemzqm.github.io/iscroll/",
   "dependencies": {
