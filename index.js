@@ -166,10 +166,10 @@ Iscroll.prototype.calcuteSpeed = function (y) {
 Iscroll.prototype.ontouchend = function (e) {
   if (!this.down || this.leftright) return;
   var touch = this.getTouch(e);
-  this.emit('release', this.y);
   this.calcuteSpeed(touch.pageY);
   var m = this.momentum();
   this.scrollTo(m.dest, m.duration, m.ease);
+  this.emit('release', this.y);
 }
 
 Iscroll.prototype.momentum = function () {
