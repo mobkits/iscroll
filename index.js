@@ -98,6 +98,7 @@ Iscroll.prototype.ontouchstart = function (e) {
   this.dy = 0;
   this.ts = now();
   this.leftright = null;
+  if (this.handlebar) this.resizeHandlebar();
 
   var touch = this.getTouch(e);
   this.pageY = touch.pageY;
@@ -131,12 +132,12 @@ Iscroll.prototype.ontouchmove = function (e) {
     // if is greater than 1 or -1, we're swiping up/down
     if (slope > 1 || slope < -1) {
       this.leftright = true;
+      if (this.handlebar) this.hideHandlebar();
       return;
     } else {
       this.leftright = false;
     }
   }
-  if (this.handlebar) this.resizeHandlebar();
 
   //calculate speed every 100 milisecond
   this.calcuteSpeed(y);
@@ -296,7 +297,6 @@ Iscroll.prototype.transformHandlebar = function(){
   var ih = h - vh;
   var y = parseInt(- bh * this.y/ih);
   var s = this.handlebar.style;
-  this.handlebar.style.background = 'rgba(0,0,0,0.4)';
   if (has3d) {
     s.webkitTransform = 'translate3d(0, ' + y + 'px' + ', 0)';
   } else {
@@ -311,7 +311,7 @@ Iscroll.prototype.transformHandlebar = function(){
 Iscroll.prototype.resizeHandlebar = function(){
   var h = this.viewHeight * this.viewHeight/this.height;
   this.handlebar.style.height = h + 'px';
-  this.handlebar.style.backgroundColor = 'rgba(0,0,0,0.4)';
+  this.handlebar.style.background = 'rgba(0,0,0,0.3)';
 }
 
 Iscroll.prototype.hideHandlebar = function () {
