@@ -41,6 +41,7 @@ function Iscroll(el, opts) {
       return self.scrollTo(v, 200);
     })
   }
+  this.autorefresh = opts.autorefresh === undefined ? true : opts.autorefresh;
   opts = opts || {};
   if (opts.handlebar) {
     var bar = this.handlebar = document.createElement('div');
@@ -94,7 +95,7 @@ Iscroll.prototype.restrict = function (y) {
 Iscroll.prototype.ontouchstart = function (e) {
   this.speed = null;
   if (this.tween) this.tween.stop();
-  this.refresh();
+  if (this.autorefresh) this.refresh();
   this.dy = 0;
   this.ts = now();
   this.leftright = null;

@@ -1,3 +1,6 @@
+### 0.1.1
+* add `autorefresh` option, set to false to disable autorefresh.
+
 ### 0.1.0
 
 * remove `scrollTop` and `scroll` event emulate on scrollable element.
