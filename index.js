@@ -170,6 +170,7 @@ Iscroll.prototype.ontouchend = function (e) {
   var m = this.momentum();
   this.scrollTo(m.dest, m.duration, m.ease);
   this.emit('release', this.y);
+  this.down = null;
 }
 
 Iscroll.prototype.momentum = function () {
