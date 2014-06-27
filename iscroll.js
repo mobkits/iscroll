@@ -1261,6 +1261,8 @@ var now = Date.now || function () {
 }
 var getterAndSetter = (typeof Object.__defineGetter__ === 'function' && typeof Object.__defineSetter__ === 'function');
 
+var minSpeed = 0.01;
+
 function lastVisible(el) {
   var nodes = el.childNodes;
   for(var i = nodes.length - 1; i >=0; i --) {
@@ -1271,13 +1273,13 @@ function lastVisible(el) {
   }
 }
 
-
 function Iscroll(el, opts) {
   if (! (this instanceof Iscroll)) return new Iscroll(el, opts);
   this.y = 0;
   this.el = el;
   this.pb = parseInt(styles(el).getPropertyValue('padding-bottom'), 10);
   this.touchAction('none');
+  this.el.style[transform + 'Style'] = 'preserve-3d';
   this.refresh();
   this.bind();
   var self = this;
@@ -1289,12 +1291,19 @@ function Iscroll(el, opts) {
       return self.scrollTo(v, 200);
     })
   }
+  this.autorefresh = opts.autorefresh === undefined ? true : opts.autorefresh;
   opts = opts || {};
   if (opts.handlebar) {
     var bar = this.handlebar = document.createElement('div');
     bar.className = 'iscroll-handlebar';
     this.el.parentNode.appendChild(bar);
   }
+  window.addEventListener("orientationchange", function() {
+    self.refresh();
+  }, false);
+  window.addEventListener("resize", function() {
+    self.refresh();
+  }, false);
 }
 
 Emitter(Iscroll.prototype);
@@ -1342,7 +1351,7 @@ Iscroll.prototype.restrict = function (y) {
 Iscroll.prototype.ontouchstart = function (e) {
   this.speed = null;
   if (this.tween) this.tween.stop();
-  this.refresh();
+  if (this.autorefresh) this.refresh();
   this.dy = 0;
   this.ts = now();
   this.leftright = null;
@@ -1402,7 +1411,7 @@ Iscroll.prototype.calcuteSpeed = function (y) {
   if (ts - this.down.at < 100) {
     this.distance = y - this.pageY;
     this.speed = Math.abs(this.distance/dt);
-  } else if(dt > 50){
+  } else if(dt > 100){
     this.distance = y - this.pageY;
     this.speed = Math.abs(this.distance/dt);
     this.ts = ts;
@@ -1413,16 +1422,17 @@ Iscroll.prototype.calcuteSpeed = function (y) {
 Iscroll.prototype.ontouchend = function (e) {
   if (!this.down || this.leftright) return;
   var touch = this.getTouch(e);
-  this.emit('release', this.y);
   this.calcuteSpeed(touch.pageY);
   var m = this.momentum();
   this.scrollTo(m.dest, m.duration, m.ease);
+  this.emit('release', this.y);
+  this.down = null;
 }
 
 Iscroll.prototype.momentum = function () {
-  var deceleration = 0.0005;
+  var deceleration = 0.0004;
   var speed = this.speed;
-  speed = min(speed, 1.1);
+  speed = min(speed, 0.8);
   var destination = this.y + ( speed * speed ) / ( 2 * deceleration ) * ( this.distance < 0 ? -1 : 1 );
   var duration = speed / deceleration;
   var newY, ease;
@@ -1453,10 +1463,11 @@ Iscroll.prototype.scrollTo = function (y, duration, easing) {
   if (this.tween) this.tween.stop();
   var intransition = (duration > 0 && y !== this.y);
   if (!intransition) {
+    this.onScrollEnd();
     return this.translate(y);
   }
 
-  easing = easing || 'out-circ';
+  easing = easing || 'out-cube';
   var tween = this.tween = Tween({y : this.y})
       .ease(easing)
       .to({y: y})
@@ -1528,9 +1539,9 @@ Iscroll.prototype.translate = function(y) {
     if (this.handlebar) this.transformHandlebar();
   }
   if (has3d) {
-    s.webkitTransform = 'translate3d(0, ' + y + 'px' + ', 0)';
+    s[transform] = 'translate3d(0, ' + y + 'px' + ', 0)';
   } else {
-    s.webKitTransform = 'translateY(' + y + 'px)';
+    s[transform] = 'translateY(' + y + 'px)';
   }
 }
 
@@ -1555,9 +1566,9 @@ Iscroll.prototype.transformHandlebar = function(){
   var y = parseInt(- bh * this.y/ih);
   var s = this.handlebar.style;
   if (has3d) {
-    s.webkitTransform = 'translate3d(0, ' + y + 'px' + ', 0)';
+    s[transform] = 'translate3d(0, ' + y + 'px' + ', 0)';
   } else {
-    s.webKitTransform = 'translateY(' + y + 'px)';
+    s[transform] = 'translateY(' + y + 'px)';
   }
 }
 
