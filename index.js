@@ -13,6 +13,8 @@ var now = Date.now || function () {
 }
 var getterAndSetter = (typeof Object.__defineGetter__ === 'function' && typeof Object.__defineSetter__ === 'function');
 
+var minSpeed = 0.01;
+
 function lastVisible(el) {
   var nodes = el.childNodes;
   for(var i = nodes.length - 1; i >=0; i --) {
@@ -23,13 +25,13 @@ function lastVisible(el) {
   }
 }
 
-
 function Iscroll(el, opts) {
   if (! (this instanceof Iscroll)) return new Iscroll(el, opts);
   this.y = 0;
   this.el = el;
   this.pb = parseInt(styles(el).getPropertyValue('padding-bottom'), 10);
   this.touchAction('none');
+  this.el.style[transform + 'Style'] = 'preserve-3d';
   this.refresh();
   this.bind();
   var self = this;
@@ -283,9 +285,9 @@ Iscroll.prototype.translate = function(y) {
     if (this.handlebar) this.transformHandlebar();
   }
   if (has3d) {
-    s.webkitTransform = 'translate3d(0, ' + y + 'px' + ', 0)';
+    s[transform] = 'translate3d(0, ' + y + 'px' + ', 0)';
   } else {
-    s.webKitTransform = 'translateY(' + y + 'px)';
+    s[transform] = 'translateY(' + y + 'px)';
   }
 }
 
@@ -310,9 +312,9 @@ Iscroll.prototype.transformHandlebar = function(){
   var y = parseInt(- bh * this.y/ih);
   var s = this.handlebar.style;
   if (has3d) {
-    s.webkitTransform = 'translate3d(0, ' + y + 'px' + ', 0)';
+    s[transform] = 'translate3d(0, ' + y + 'px' + ', 0)';
   } else {
-    s.webKitTransform = 'translateY(' + y + 'px)';
+    s[transform] = 'translateY(' + y + 'px)';
   }
 }
 
