@@ -50,6 +50,12 @@ function Iscroll(el, opts) {
     bar.className = 'iscroll-handlebar';
     this.el.parentNode.appendChild(bar);
   }
+  window.addEventListener("orientationchange", function() {
+    self.refresh();
+  }, false);
+  window.addEventListener("resize", function() {
+    self.refresh();
+  }, false);
 }
 
 Emitter(Iscroll.prototype);
