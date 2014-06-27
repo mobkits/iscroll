@@ -1,5 +1,17 @@
+### 0.1.5
+* improve: make scroll more smoothly
+
+### 0.1.4
+* fix: clear this.down on touchend
+
+### 0.1.3
+* fix: emit `release` after trigger transition.
+
+### 0.1.2
+* improve: add `autorefresh` option, set to false to disable autorefresh.
+
 ### 0.1.1
-* add `autorefresh` option, set to false to disable autorefresh.
+* fix `onscrollend` doesn't fire.
 
 ### 0.1.0
 
