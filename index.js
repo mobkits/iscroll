@@ -157,7 +157,7 @@ Iscroll.prototype.calcuteSpeed = function (y) {
   if (ts - this.down.at < 100) {
     this.distance = y - this.pageY;
     this.speed = Math.abs(this.distance/dt);
-  } else if(dt > 50){
+  } else if(dt > 100){
     this.distance = y - this.pageY;
     this.speed = Math.abs(this.distance/dt);
     this.ts = ts;
@@ -176,9 +176,9 @@ Iscroll.prototype.ontouchend = function (e) {
 }
 
 Iscroll.prototype.momentum = function () {
-  var deceleration = 0.0005;
+  var deceleration = 0.0004;
   var speed = this.speed;
-  speed = min(speed, 1.1);
+  speed = min(speed, 0.8);
   var destination = this.y + ( speed * speed ) / ( 2 * deceleration ) * ( this.distance < 0 ? -1 : 1 );
   var duration = speed / deceleration;
   var newY, ease;
@@ -213,7 +213,7 @@ Iscroll.prototype.scrollTo = function (y, duration, easing) {
     return this.translate(y);
   }
 
-  easing = easing || 'out-circ';
+  easing = easing || 'out-cube';
   var tween = this.tween = Tween({y : this.y})
       .ease(easing)
       .to({y: y})
