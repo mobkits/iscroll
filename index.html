@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>More</title>
-  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1,width=device-width, height=device-height"/>
+  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1"/>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="stylesheet" href="build/build.css">
@@ -211,7 +211,8 @@
     var el = document.querySelector('.scrollable');
 
     var is = iscroll(el, {
-      handlebar: true
+      handlebar: true,
+      autorefresh: false
     });
     var log = document.getElementById('log');
 
@@ -230,6 +231,7 @@
         var node = document.createElement('li');
         node.textContent = i;
         c.appendChild(node);
+        is.refresh();
       }
     }, false)
 

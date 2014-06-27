@@ -1365,6 +1365,8 @@ var now = Date.now || function () {\n\
 }\n\
 var getterAndSetter = (typeof Object.__defineGetter__ === 'function' && typeof Object.__defineSetter__ === 'function');\n\
 \n\
+var minSpeed = 0.01;\n\
+\n\
 function lastVisible(el) {\n\
   var nodes = el.childNodes;\n\
   for(var i = nodes.length - 1; i >=0; i --) {\n\
@@ -1375,13 +1377,13 @@ function lastVisible(el) {\n\
   }\n\
 }\n\
 \n\
-\n\
 function Iscroll(el, opts) {\n\
   if (! (this instanceof Iscroll)) return new Iscroll(el, opts);\n\
   this.y = 0;\n\
   this.el = el;\n\
   this.pb = parseInt(styles(el).getPropertyValue('padding-bottom'), 10);\n\
   this.touchAction('none');\n\
+  this.el.style[transform + 'Style'] = 'preserve-3d';\n\
   this.refresh();\n\
   this.bind();\n\
   var self = this;\n\
@@ -1393,12 +1395,19 @@ function Iscroll(el, opts) {\n\
       return self.scrollTo(v, 200);\n\
     })\n\
   }\n\
+  this.autorefresh = opts.autorefresh === undefined ? true : opts.autorefresh;\n\
   opts = opts || {};\n\
   if (opts.handlebar) {\n\
     var bar = this.handlebar = document.createElement('div');\n\
     bar.className = 'iscroll-handlebar';\n\
     this.el.parentNode.appendChild(bar);\n\
   }\n\
+  window.addEventListener(\"orientationchange\", function() {\n\
+    self.refresh();\n\
+  }, false);\n\
+  window.addEventListener(\"resize\", function() {\n\
+    self.refresh();\n\
+  }, false);\n\
 }\n\
 \n\
 Emitter(Iscroll.prototype);\n\
@@ -1446,7 +1455,7 @@ Iscroll.prototype.restrict = function (y) {\n\
 Iscroll.prototype.ontouchstart = function (e) {\n\
   this.speed = null;\n\
   if (this.tween) this.tween.stop();\n\
-  this.refresh();\n\
+  if (this.autorefresh) this.refresh();\n\
   this.dy = 0;\n\
   this.ts = now();\n\
   this.leftright = null;\n\
@@ -1506,7 +1515,7 @@ Iscroll.prototype.calcuteSpeed = function (y) {\n\
   if (ts - this.down.at < 100) {\n\
     this.distance = y - this.pageY;\n\
     this.speed = Math.abs(this.distance/dt);\n\
-  } else if(dt > 50){\n\
+  } else if(dt > 100){\n\
     this.distance = y - this.pageY;\n\
     this.speed = Math.abs(this.distance/dt);\n\
     this.ts = ts;\n\
@@ -1517,16 +1526,17 @@ Iscroll.prototype.calcuteSpeed = function (y) {\n\
 Iscroll.prototype.ontouchend = function (e) {\n\
   if (!this.down || this.leftright) return;\n\
   var touch = this.getTouch(e);\n\
-  this.emit('release', this.y);\n\
   this.calcuteSpeed(touch.pageY);\n\
   var m = this.momentum();\n\
   this.scrollTo(m.dest, m.duration, m.ease);\n\
+  this.emit('release', this.y);\n\
+  this.down = null;\n\
 }\n\
 \n\
 Iscroll.prototype.momentum = function () {\n\
-  var deceleration = 0.0005;\n\
+  var deceleration = 0.0004;\n\
   var speed = this.speed;\n\
-  speed = min(speed, 1.1);\n\
+  speed = min(speed, 0.8);\n\
   var destination = this.y + ( speed * speed ) / ( 2 * deceleration ) * ( this.distance < 0 ? -1 : 1 );\n\
   var duration = speed / deceleration;\n\
   var newY, ease;\n\
@@ -1561,7 +1571,7 @@ Iscroll.prototype.scrollTo = function (y, duration, easing) {\n\
     return this.translate(y);\n\
   }\n\
 \n\
-  easing = easing || 'out-circ';\n\
+  easing = easing || 'out-cube';\n\
   var tween = this.tween = Tween({y : this.y})\n\
       .ease(easing)\n\
       .to({y: y})\n\
@@ -1633,9 +1643,9 @@ Iscroll.prototype.translate = function(y) {\n\
     if (this.handlebar) this.transformHandlebar();\n\
   }\n\
   if (has3d) {\n\
-    s.webkitTransform = 'translate3d(0, ' + y + 'px' + ', 0)';\n\
+    s[transform] = 'translate3d(0, ' + y + 'px' + ', 0)';\n\
   } else {\n\
-    s.webKitTransform = 'translateY(' + y + 'px)';\n\
+    s[transform] = 'translateY(' + y + 'px)';\n\
   }\n\
 }\n\
 \n\
@@ -1660,9 +1670,9 @@ Iscroll.prototype.transformHandlebar = function(){\n\
   var y = parseInt(- bh * this.y/ih);\n\
   var s = this.handlebar.style;\n\
   if (has3d) {\n\
-    s.webkitTransform = 'translate3d(0, ' + y + 'px' + ', 0)';\n\
+    s[transform] = 'translate3d(0, ' + y + 'px' + ', 0)';\n\
   } else {\n\
-    s.webKitTransform = 'translateY(' + y + 'px)';\n\
+    s[transform] = 'translateY(' + y + 'px)';\n\
   }\n\
 }\n\
 \n\

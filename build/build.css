@@ -2,13 +2,13 @@
   position: absolute;
   right: 0px;
   top: 0px;
-  -webkit-transition: background-color 0.15s linear, -webkit-transform 0.01s linear;
-  transition: background-color 0.15s linear, transform 0.01s linear;
+  -webkit-transition: background-color 0.25s linear, -webkit-transform 0.01s linear;
+  transition: background-color 0.25s linear, transform 0.01s linear;
   width: 4px;
   border-radius: 2px;
   background-color: rgba(0, 0, 0, 0);
-  z-index: 99999;
-  height: 30px;
+  z-index: 9999;
+  height: 0px;
 }
 
 
