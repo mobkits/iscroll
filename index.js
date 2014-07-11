@@ -123,10 +123,6 @@ Iscroll.prototype.ontouchmove = function (e) {
   e.preventDefault();
   if (!this.down || this.leftright) return;
   var touch = this.getTouch(e);
-  // TODO: ignore more than one finger
-  if (!touch) {
-    return;
-  }
 
   var down = this.down;
   var y = touch.pageY;
