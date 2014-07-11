@@ -19,7 +19,7 @@ function lastVisible(el) {
   var nodes = el.childNodes;
   for(var i = nodes.length - 1; i >=0; i --) {
     var node = nodes[i];
-    if (node.nodeType === 1 && node.style.display !== 'none') {
+    if (node.nodeType === 1 && styles(node).getPropertyValue('display') !== 'none') {
       return node;
     }
   }
