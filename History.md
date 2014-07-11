@@ -1,3 +1,10 @@
+### 0.1.7
+* improve: use computed-style to check visiability.
+* fix: unbind function would remove all event listeners and remove handlebar.
+
+### 0.1.6
+* improve: refresh on orientation change
+
 ### 0.1.5
 * improve: make scroll more smoothly
 
@@ -17,9 +24,9 @@
 
 * remove `scrollTop` and `scroll` event emulate on scrollable element.
 * add `scroll` and `scrollend` event
-* handlerbar animation improvement.
+* handlebar animation improvement.
 
 ### 0.0.7
 
-* add handlerbar
+* add handlebar
 * add scroll debounce

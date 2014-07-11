@@ -50,12 +50,9 @@ function Iscroll(el, opts) {
     bar.className = 'iscroll-handlebar';
     this.el.parentNode.appendChild(bar);
   }
-  window.addEventListener("orientationchange", function() {
-    self.refresh();
-  }, false);
-  window.addEventListener("resize", function() {
-    self.refresh();
-  }, false);
+  this._refresh = this.refresh.bind(this);
+  window.addEventListener("orientationchange", this._refresh, false);
+  window.addEventListener("resize", this._refresh, false);
 }
 
 Emitter(Iscroll.prototype);
@@ -90,8 +87,12 @@ Iscroll.prototype.refresh = function () {
 }
 
 Iscroll.prototype.unbind = function () {
+  this.off();
   this.events.unbind();
   this.docEvents.unbind();
+  window.removeEventListener("orientationchange", this._refresh, false);
+  window.removeEventListener("resize", this._refresh, false);
+  if (this.handlebar) this.el.parentNode.removeChild(this.handlebar);
 }
 
 Iscroll.prototype.restrict = function (y) {

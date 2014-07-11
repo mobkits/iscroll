@@ -105,6 +105,7 @@
     <div>
       <button id="add">add</button>
       <button id="top">top</button>
+      <button id="remove">remove</button>
     </div>
   </div>
   <div class="wrapper">
@@ -113,7 +114,7 @@
         pull to refresh
       </div>
       <ul class="content">
-          <li id="console"><strong>Pull here to try</strong></li>
+          <li id="mobile"><strong style="color:red;">Support mobile device only</strong></li>
           <li>Lorem ipsum dolor sit amet,</li>
           <li>consectetur adipisici elit,</li>
           <li>sed eiusmod tempor incidunt ut</li>
@@ -203,9 +204,8 @@
   </div>
   <script src="build/build.js"></script>
   <script>
-    var ismobile = require('ismobile');
-    if (!ismobile) {
-      alert('only support mobile device');
+    if ('ontouchstart' in window) {
+      document.getElementById('mobile').style.display = 'none';
     }
     var iscroll = require('iscroll');
     var el = document.querySelector('.scrollable');
@@ -224,7 +224,6 @@
       console.log(e);
     })
 
-
     document.getElementById('add').addEventListener('click', function(e) {
       var c = el.querySelector('.content');
       for (var i = 1; i < 5; i++) {
@@ -234,6 +233,10 @@
         is.refresh();
       }
     }, false)
+
+    document.getElementById('remove').addEventListener('click', function(e) {
+      is.unbind();
+    })
 
     document.getElementById('top').addEventListener('click', function(e) {
       is.scrollTo(0, 200);

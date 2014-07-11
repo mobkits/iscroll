@@ -17,7 +17,6 @@
   },
   "development": {
     "dependencies": {
-      "chemzqm/ismobile": "*"
     }
   },
   "license": "MIT",
