@@ -11,7 +11,7 @@ var min = Math.min;
 var now = Date.now || function () {
   return (new Date()).getTime();
 }
-var getterAndSetter = (typeof Object.__defineGetter__ === 'function' && typeof Object.__defineSetter__ === 'function');
+var getterAndSetter = !!(window.__defineGetter__ && window.__defineSetter__);
 
 var minSpeed = 0.01;
 
