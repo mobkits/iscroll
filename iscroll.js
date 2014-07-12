@@ -1259,7 +1259,7 @@ var min = Math.min;
 var now = Date.now || function () {
   return (new Date()).getTime();
 }
-var getterAndSetter = (typeof Object.__defineGetter__ === 'function' && typeof Object.__defineSetter__ === 'function');
+var getterAndSetter = !!(window.__defineGetter__ && window.__defineSetter__);
 
 var minSpeed = 0.01;
 
@@ -1267,7 +1267,7 @@ function lastVisible(el) {
   var nodes = el.childNodes;
   for(var i = nodes.length - 1; i >=0; i --) {
     var node = nodes[i];
-    if (node.nodeType === 1 && node.style.display !== 'none') {
+    if (node.nodeType === 1 && styles(node).getPropertyValue('display') !== 'none') {
       return node;
     }
   }
@@ -1298,12 +1298,9 @@ function Iscroll(el, opts) {
     bar.className = 'iscroll-handlebar';
     this.el.parentNode.appendChild(bar);
   }
-  window.addEventListener("orientationchange", function() {
-    self.refresh();
-  }, false);
-  window.addEventListener("resize", function() {
-    self.refresh();
-  }, false);
+  this._refresh = this.refresh.bind(this);
+  window.addEventListener("orientationchange", this._refresh, false);
+  window.addEventListener("resize", this._refresh, false);
 }
 
 Emitter(Iscroll.prototype);
@@ -1338,8 +1335,12 @@ Iscroll.prototype.refresh = function () {
 }
 
 Iscroll.prototype.unbind = function () {
+  this.off();
   this.events.unbind();
   this.docEvents.unbind();
+  window.removeEventListener("orientationchange", this._refresh, false);
+  window.removeEventListener("resize", this._refresh, false);
+  if (this.handlebar) this.el.parentNode.removeChild(this.handlebar);
 }
 
 Iscroll.prototype.restrict = function (y) {
@@ -1371,10 +1372,6 @@ Iscroll.prototype.ontouchmove = function (e) {
   e.preventDefault();
   if (!this.down || this.leftright) return;
   var touch = this.getTouch(e);
-  // TODO: ignore more than one finger
-  if (!touch) {
-    return;
-  }
 
   var down = this.down;
   var y = touch.pageY;
