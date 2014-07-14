@@ -8,11 +8,11 @@
   "dependencies": {
     "component/has-translate3d": "*",
     "component/touchaction-property": "*",
-    "component/events": "*",
     "component/raf": "*",
     "component/tween": "*",
     "component/emitter": "*",
     "component/transform-property": "*",
+    "chemzqm/events": "*",
     "chemzqm/computed-style": "*"
   },
   "development": {
