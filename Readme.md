@@ -24,7 +24,7 @@ It's prefered to install with npm:
 
     $ npm install iscroll-component
 
-then user webpack or browserify, or install with [component(1)](http://component.io):
+then use webpack or browserify, or install with [component(1)](http://component.io):
 
     $ component install chemzqm/iscroll
 
