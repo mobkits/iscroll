@@ -18,8 +18,10 @@ var webpackConfig = {
       // { test: /\.html$/, loader: 'html-loader' }
       { test: /\.css$/, loader: 'style?!css?sourceMap' }
     ]
-  }
+  },
+  plugins:[]
 }
+
 var myConfig = Object.create(webpackConfig)
 // for debugging
 myConfig.devtool = 'sourcemap'
@@ -77,6 +79,12 @@ gulp.task('webpack:dev-server', function () {
     gutil.log('[webpack-dev-server]', 'http://localhost:8080/')
   })
 })
+
+webpackConfig.plugins.push(new webpack.optimize.UglifyJsPlugin({
+  compress: {
+    warnings: false
+  }
+}))
 
 var devCompiler = webpack(webpackConfig)
 gulp.task('example', function (callback) {
