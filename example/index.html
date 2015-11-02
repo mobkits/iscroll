@@ -6,7 +6,6 @@
   <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1"/>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <link rel="stylesheet" href="build/build.css">
   <style>
     body {
       font: 500 14px/1.6 "Helvetica Neue", Helvetica, sans-serif;
@@ -202,45 +201,6 @@
       <div class="bottom">Made by @chemzqm</div>
     </div>
   </div>
-  <script src="build/build.js"></script>
-  <script>
-    if ('ontouchstart' in window) {
-      document.getElementById('mobile').style.display = 'none';
-    }
-    var iscroll = require('iscroll');
-    var el = document.querySelector('.scrollable');
-
-    var is = iscroll(el, {
-      handlebar: true,
-      autorefresh: false
-    });
-    var log = document.getElementById('log');
-
-    is.on('scroll', function(y) {
-      log.textContent = y;
-    }, false);
-
-    is.on('scrollend', function(e) {
-      console.log(e);
-    })
-
-    document.getElementById('add').addEventListener('click', function(e) {
-      var c = el.querySelector('.content');
-      for (var i = 1; i < 5; i++) {
-        var node = document.createElement('li');
-        node.textContent = i;
-        c.appendChild(node);
-        is.refresh();
-      }
-    }, false)
-
-    document.getElementById('remove').addEventListener('click', function(e) {
-      is.unbind();
-    })
-
-    document.getElementById('top').addEventListener('click', function(e) {
-      is.scrollTo(0, 200);
-    }, false)
-  </script>
+  <script src="bundle.js"></script>
 </body>
 </html>

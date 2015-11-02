@@ -1,3 +1,7 @@
+### 0.1.8
+* use Object.defineProperty for element scrollTop
+* support using with webpack & browserify
+
 ### 0.1.7
 * improve: use computed-style to check visiability.
 * fix: unbind function would remove all event listeners and remove handlebar.

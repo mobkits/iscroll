@@ -1,0 +1,52 @@
+{
+  "name": "iscroll-component",
+  "version": "0.1.8",
+  "description": "scroll component for mobile",
+  "main": "index.js",
+  "scripts": {
+    "test": "make"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chemzqm/iscroll.git"
+  },
+  "keywords": [
+    "scroll",
+    "simulate"
+  ],
+  "author": "chemzqm@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chemzqm/iscroll/issues"
+  },
+  "homepage": "https://github.com/chemzqm/iscroll#readme",
+  "browser": {
+    "events": "component-events",
+    "emitter": "component-emitter",
+    "raf": "component-raf",
+    "tween": "component-tween"
+  },
+  "dependencies": {
+    "component-emitter": "^1.2.0",
+    "component-events": "^1.0.9",
+    "component-raf": "^1.2.0",
+    "component-tween": "^1.2.0",
+    "computed-style": "^0.3.0",
+    "has-translate3d": "^0.0.3",
+    "touchaction-property": "0.0.1",
+    "transform-property": "0.0.1"
+  },
+  "devDependencies": {
+    "connect-livereload": "^0.5.3",
+    "css-loader": "^0.21.0",
+    "gulp": "^3.9.0",
+    "gulp-livereload": "^3.8.1",
+    "gulp-serve": "^1.2.0",
+    "gulp-uglify": "^1.4.2",
+    "gulp-util": "^3.0.7",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.12.2",
+    "webpack-dev-server": "^1.12.1",
+    "webpack-stream": "^2.1.1"
+  }
+}

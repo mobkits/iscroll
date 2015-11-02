@@ -4,6 +4,8 @@ Make element scrollable using touch events.
 
 The goal of this library is **high performance** and easy to use, while keep the code simplity.
 
+The scroll element is automatically refreshed when window resize or orientation change
+
 Tested on **Android > 2.2** and **IOS > 6**, some webview would add a scrollbar by default, you can add `overflow:hidden` to the target element, notice that may have some side effect.
 
 [demo](http://chemzqm.github.io/iscroll/)
@@ -53,6 +55,11 @@ Recalculate element height, call this after element height changed. (called auto
 ### .scrollTo(y, [duration])
 
 Set translateY to `y` with optional duration(ms), called when you set `el.scrollTop`.
+
+## Test
+  npm install
+  gulp
+  http://localhost:8080/example/index.html
 
 ## License
 
