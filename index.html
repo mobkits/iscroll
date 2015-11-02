@@ -6,7 +6,6 @@
   <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1"/>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <link rel="stylesheet" href="build/build.css">
   <style>
     body {
       font: 500 14px/1.6 "Helvetica Neue", Helvetica, sans-serif;
@@ -105,6 +104,7 @@
     <div>
       <button id="add">add</button>
       <button id="top">top</button>
+      <button id="remove">remove</button>
     </div>
   </div>
   <div class="wrapper">
@@ -113,7 +113,7 @@
         pull to refresh
       </div>
       <ul class="content">
-          <li id="console"><strong>Pull here to try</strong></li>
+          <li id="mobile"><strong style="color:red;">Support mobile device only</strong></li>
           <li>Lorem ipsum dolor sit amet,</li>
           <li>consectetur adipisici elit,</li>
           <li>sed eiusmod tempor incidunt ut</li>
@@ -201,43 +201,6 @@
       <div class="bottom">Made by @chemzqm</div>
     </div>
   </div>
-  <script src="build/build.js"></script>
-  <script>
-    var ismobile = require('ismobile');
-    if (!ismobile) {
-      alert('only support mobile device');
-    }
-    var iscroll = require('iscroll');
-    var el = document.querySelector('.scrollable');
-
-    var is = iscroll(el, {
-      handlebar: true,
-      autorefresh: false
-    });
-    var log = document.getElementById('log');
-
-    is.on('scroll', function(y) {
-      log.textContent = y;
-    }, false);
-
-    is.on('scrollend', function(e) {
-      console.log(e);
-    })
-
-
-    document.getElementById('add').addEventListener('click', function(e) {
-      var c = el.querySelector('.content');
-      for (var i = 1; i < 5; i++) {
-        var node = document.createElement('li');
-        node.textContent = i;
-        c.appendChild(node);
-        is.refresh();
-      }
-    }, false)
-
-    document.getElementById('top').addEventListener('click', function(e) {
-      is.scrollTo(0, 200);
-    }, false)
-  </script>
+  <script src="bundle.js"></script>
 </body>
 </html>
