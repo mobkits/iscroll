@@ -12,8 +12,8 @@
     "component/tween": "*",
     "component/emitter": "*",
     "component/transform-property": "*",
-    "chemzqm/events": "*",
-    "chemzqm/computed-style": "*"
+    "component/events": "*",
+    "twolfson/computedStyle": "*"
   },
   "development": {
     "dependencies": {
