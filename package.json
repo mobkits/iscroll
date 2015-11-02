@@ -1,6 +1,6 @@
 {
   "name": "iscroll-component",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "scroll component for mobile",
   "main": "index.js",
   "scripts": {
@@ -48,5 +48,6 @@
     "webpack": "^1.12.2",
     "webpack-dev-server": "^1.12.1",
     "webpack-stream": "^2.1.1"
-  }
+  },
+  "style":"iscroll.css"
 }
