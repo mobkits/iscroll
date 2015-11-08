@@ -1,3 +1,6 @@
+### 1.0.1
+* Not fail if CustomEvent can not create
+
 ### 1.0.0
 * Use the correct scrollable element
 * Fire custom scroll and set scrollTop to the scrollable correctly
