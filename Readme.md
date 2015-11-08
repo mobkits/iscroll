@@ -12,11 +12,13 @@ Tested on **Android > 2.2** and **IOS > 6**
 
 [click here](https://github.com/chemzqm/iscroll/blob/master/supported.tsv) to see what device/os_version should be supported.
 
-This library need `Object.defineProperty` and `CustomEvent` to work properly.
+This library need `Object.defineProperty` and `CustomEvent` to work properly, if not exsit, the element hack (scrollTop and scroll event) would not available
 
 ## Installation
 
     $ npm install iscroll-component
+
+You may need [webpack](https://webpack.github.io/) to build this lib
 
 ## Example
 
