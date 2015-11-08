@@ -1,5 +1,5 @@
 dev:
-	@open http://localhost:8080/example/index.html
+	@open http://localhost:3000/example/index.html
 	@gulp
 
 standalone:

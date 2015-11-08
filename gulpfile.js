@@ -26,7 +26,7 @@ myConfig.devtool = 'sourcemap'
 myConfig.debug = true
 
 var paths = {
-  scripts: ['index.js', 'example/index.js'],
+  scripts: ['lib/*.js', 'example/index.js'],
   asserts: ['*.css', 'example/*.html']
 }
 

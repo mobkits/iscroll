@@ -32,9 +32,8 @@
     "component-raf": "^1.2.0",
     "component-tween": "^1.2.0",
     "computed-style": "^0.3.0",
-    "has-translate3d": "^0.0.3",
-    "touchaction-property": "0.0.1",
-    "transform-property": "0.0.1"
+    "prop-detect": "^1.0.0",
+    "throttleit": "^1.0.0"
   },
   "devDependencies": {
     "connect-livereload": "^0.5.3",
@@ -49,5 +48,5 @@
     "webpack-dev-server": "^1.12.1",
     "webpack-stream": "^2.1.1"
   },
-  "style":"iscroll.css"
+  "style": "iscroll.css"
 }
