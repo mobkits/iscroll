@@ -7,11 +7,6 @@ standalone:
 	@cp build/build.js iscroll.js
 
 doc:
-	@rm -rf .gh-pages
-	@gulp example
-	@mkdir .gh-pages
-	@cp -r example/* .gh-pages
-	@ghp-import .gh-pages -n -p
-	@rm -rf .gh-pages
+	@ghp-import example -n -p
 
 .PHONY: clean doc

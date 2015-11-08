@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Iscroll</title>
+  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1"/>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+</head>
+<body>
+  <div id="log">
+  </div>
+  <script type="text/javascript" charset="utf-8">
+    var el = document.getElementById('log')
+    function append(text) {
+      var div = document.createElement('div')
+      div.textContent = text
+      el.appendChild(div)
+    }
+    var i = 0
+    var interval = setInterval(function() {
+      i++
+      if (i === 100) window.clearInterval(interval)
+      var e = new CustomEvent('scroll')
+      el.dispatchEvent(e)
+    }, 200)
+    el.addEventListener('scroll', function(e) {
+      append(1)
+    }, false)
+  </script>
+</body>

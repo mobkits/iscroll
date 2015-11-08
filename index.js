@@ -1,11 +1,11 @@
-var has3d = require('has-translate3d')
 var touchAction = require('touchaction-property')
-var events = require('events')
-var computedStyle = require('computed-style')
 var transform = require('transform-property')
+var computedStyle = require('computed-style')
+var has3d = require('has-translate3d')
 var Emitter = require('emitter')
-var raf = require('raf')
+var events = require('events')
 var Tween = require('tween')
+var raf = require('raf')
 var max = Math.max
 var min = Math.min
 var now = Date.now || function () {
@@ -24,32 +24,61 @@ function lastVisible(el) {
   }
 }
 
+/**
+ * Create a wrapper inside scrollable element
+ *
+ * @param  {Element}  el
+ * @return {undefined}
+ * @api public
+ */
+function createWrapper(el) {
+  var div = document.createElement('div')
+  div.className = 'iscroll-wrapper'
+  div.style.padding = '0px'
+  div.style.margin = '0px'
+  var fragment = document.createDocumentFragment()
+  var children = el.children
+  var l = children.length
+  if (l !== 0) {
+    for (var i = 0; i < l; i++) {
+      fragment.appendChild(children[0])
+    }
+    div.appendChild(fragment)
+  }
+  el.appendChild(div)
+  return div
+}
+
 function Iscroll(el, opts) {
   if (! (this instanceof Iscroll)) return new Iscroll(el, opts)
   this.y = 0
-  this.el = el
-  this.pb = parseInt(computedStyle(el, 'padding-bottom'), 10)
+  this.scrollable = el
+  el.style.overflow = 'hidden'
+  this.el = createWrapper(el)
   this.touchAction('none')
-  this.el.style[transform + 'Style'] = 'preserve-3d'
   this.refresh()
   this.bind()
   var self = this
   if (defineProperty) {
-    defineProperty(this.el, 'scrollTop', {
+    defineProperty(this.scrollable, 'scrollTop', {
       set: function (v) {
-        return self.scrollTo(v, 200)
+        return self.scrollTo(-v, 200)
       },
       get: function () {
         return - self.y
       }
     })
   }
+  this.on('scroll', function () {
+    var e = new CustomEvent('scroll')
+    el.dispatchEvent(e)
+  })
   this.autorefresh = opts.autorefresh === undefined ? true : opts.autorefresh
   opts = opts || {}
   if (opts.handlebar) {
     var bar = this.handlebar = document.createElement('div')
     bar.className = 'iscroll-handlebar'
-    this.el.parentNode.appendChild(bar)
+    this.scrollable.appendChild(bar)
   }
   this._refresh = this.refresh.bind(this)
   window.addEventListener("orientationchange", this._refresh, false)
@@ -75,15 +104,11 @@ Iscroll.prototype.bind = function () {
  */
 Iscroll.prototype.refresh = function () {
   var child = lastVisible(this.el)
-  this.viewHeight = parseInt(computedStyle(this.el.parentNode, 'height'), 10)
+  this.viewHeight = parseInt(computedStyle(this.scrollable, 'height'), 10)
   var cb = child.getBoundingClientRect().bottom
   var b = this.el.getBoundingClientRect().bottom
   var h = parseInt(computedStyle(this.el, 'height'), 10)
-  if (b - cb !== 0) {
-    this.height = h + (cb - b) + this.pb
-  } else {
-    this.height = h + this.pb
-  }
+  this.height = h + (cb - b)
   this.el.style.height = this.height + 'px'
 }
 
@@ -93,7 +118,7 @@ Iscroll.prototype.unbind = function () {
   this.docEvents.unbind()
   window.removeEventListener('orientationchange', this._refresh, false)
   window.removeEventListener('resize', this._refresh, false)
-  if (this.handlebar) this.el.parentNode.removeChild(this.handlebar)
+  if (this.handlebar) this.scrollable.removeChild(this.handlebar)
 }
 
 Iscroll.prototype.restrict = function (y) {
@@ -179,6 +204,12 @@ Iscroll.prototype.ontouchend = function (e) {
   this.down = null
 }
 
+/**
+ * Calculate the animate props for moveon
+ *
+ * @return {Object}
+ * @api private
+ */
 Iscroll.prototype.momentum = function () {
   var deceleration = 0.0004
   var speed = this.speed
@@ -309,12 +340,13 @@ Iscroll.prototype.touchAction = function(value){
 }
 
 Iscroll.prototype.transformHandlebar = function(){
-  var vh = this.viewHeight
-  var h = this.height
+  var self = this
+  var vh = self.viewHeight
+  var h = self.height
   var bh = vh - vh * vh/h
   var ih = h - vh
-  var y = parseInt(- bh * this.y/ih)
-  var s = this.handlebar.style
+  var y = parseInt(- bh * self.y/ih)
+  var s = self.handlebar.style
   if (has3d) {
     s[transform] = 'translate3d(0, ' + y + 'px' + ', 0)'
   } else {

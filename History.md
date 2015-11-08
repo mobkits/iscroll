@@ -1,3 +1,6 @@
+### 0.1.9
+* use style field in package.json
+
 ### 0.1.8
 * use Object.defineProperty for element scrollTop
 * support using with webpack & browserify

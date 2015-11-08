@@ -3,6 +3,7 @@
   right: 0px;
   top: 0px;
   transition: background-color 0.25s linear, transform 0.01s linear;
+  will-change: transform;
   width: 4px;
   border-radius: 2px;
   background-color: rgba(0, 0, 0, 0);

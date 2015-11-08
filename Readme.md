@@ -1,20 +1,16 @@
 # iscroll
 
-Make element scrollable using touch events.
+Improve the scrollable element in both ios and android.
 
 The goal of this library is **high performance** and easy to use, while keep the code simplity.
 
 The scroll element is automatically refreshed when window resize or orientation change
 
-Tested on **Android > 2.2** and **IOS > 6**, some webview would add a scrollbar by default, you can add `overflow:hidden` to the target element, notice that may have some side effect.
+Tested on **Android > 2.2** and **IOS > 6**
 
 [demo](http://chemzqm.github.io/iscroll/)
 
 [click here](https://github.com/chemzqm/iscroll/blob/master/supported.tsv) to see what device/os_version should be supported.
-
-## Known issue
-
-* not works well on some old device when the device is not fully started (eg: CoolPad8070)
 
 ## Installation
 
@@ -35,8 +31,8 @@ then use webpack or browserify, or install with [component(1)](http://component.
 var Iscroll = require('iscroll');
 var el = document.getElementById('scrollable');
 var scroll = new Iscroll(el);
-scroll.on('scroll', function(e) {
-  console.log(scroll.scrollTop);
+el.addEventListener('scroll', function(e) {
+  console.log(el.scrollTop);
 }, false);
 ```
 

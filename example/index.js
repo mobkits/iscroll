@@ -11,9 +11,13 @@ var is = iscroll(el, {
 })
 var log = document.getElementById('log')
 
-is.on('scroll', function(y) {
-  log.textContent = y
-}, false)
+//is.on('scroll', function(y) {
+//  log.textContent = y
+//}, false)
+
+el.addEventListener('scroll', function () {
+  log.textContent = el.scrollTop
+})
 
 is.on('scrollend', function(e) {
   console.log(e)
@@ -28,10 +32,6 @@ document.getElementById('add').addEventListener('click', function(e) {
     is.refresh()
   }
 }, false)
-
-document.getElementById('remove').addEventListener('click', function(e) {
-  is.unbind()
-})
 
 document.getElementById('top').addEventListener('click', function(e) {
   is.scrollTo(0, 200)
