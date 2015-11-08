@@ -1,3 +1,8 @@
+### 1.0.0
+* Use the correct scrollable element
+* Fire custom scroll and set scrollTop to the scrollable correctly
+* Fix the animation on handle bar
+
 ### 0.1.9
 * use style field in package.json
 

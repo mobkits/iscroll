@@ -1,6 +1,6 @@
 {
   "name": "iscroll-component",
-  "version": "0.1.9",
+  "version": "1.0.0",
   "description": "scroll component for mobile",
   "main": "index.js",
   "scripts": {
