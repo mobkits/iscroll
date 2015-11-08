@@ -12,17 +12,11 @@ Tested on **Android > 2.2** and **IOS > 6**
 
 [click here](https://github.com/chemzqm/iscroll/blob/master/supported.tsv) to see what device/os_version should be supported.
 
+This library need `Object.defineProperty` and `CustomEvent` to work properly.
+
 ## Installation
 
-Include file [iscroll.js](https://raw.githubusercontent.com/chemzqm/iscroll/master/iscroll.js) and [iscroll.css](https://raw.githubusercontent.com/chemzqm/iscroll/master/iscroll.css) if you want to use standalone version.
-
-It's prefered to install with npm:
-
     $ npm install iscroll-component
-
-then use webpack or browserify, or install with [component(1)](http://component.io):
-
-    $ component install chemzqm/iscroll
 
 ## Example
 
