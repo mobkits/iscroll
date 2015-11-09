@@ -22,6 +22,15 @@ You may need [webpack](https://webpack.github.io/) to build this lib
 
 ## Example
 
+``` html
+<div class="scrollable">
+  <div>
+    <ul>
+    </ul>
+  </div>
+</div>
+```
+There should have a sinlge child of the scrollable element for iscroll to work with.
 
 ```js
 var Iscroll = require('iscroll');
