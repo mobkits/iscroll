@@ -1,3 +1,6 @@
+### 1.1.1
+* Use user defined element for scroll
+
 ### 1.0.1
 * Not fail if CustomEvent can not create
 
