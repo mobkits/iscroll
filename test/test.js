@@ -207,8 +207,8 @@ describe('touchmove', function() {
     is.refresh()
     assert.equal(scrollable.scrollTop, 0)
     var li = scrollable.querySelector('ul > li:first-child')
-    var t = Touch(li, {speed: 300})
-    var dis = 150
+    var t = Touch(li, {speed: 100})
+    var dis = 100
     var p = t.moveDown(dis)
     return p.then(function () {
       var top = scrollable.scrollTop

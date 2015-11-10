@@ -1,5 +1,8 @@
 # iscroll
 
+[![Build Status](https://secure.travis-ci.org/chemzqm/iscroll.svg)](http://travis-ci.org/chemzqm/iscroll)
+[![Coverage Status](https://coveralls.io/repos/chemzqm/iscroll/badge.svg?branch=master&service=github)](https://coveralls.io/github/chemzqm/iscroll?branch=master)
+
 Improve the scrollable element in both ios and android.
 
 The goal of this library is **high performance** and easy to use, while keep the code simplity.
