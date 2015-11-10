@@ -10,6 +10,9 @@ test:
 	@open http://localhost:8080/bundle
 	@webpack-dev-server 'mocha!./test/test.js' --inline --hot
 
+test-karma:
+	@node_modules/.bin/karma start --single-run
+
 doc:
 	@ghp-import example -n -p
 
