@@ -13,4 +13,4 @@ test:
 doc:
 	@ghp-import example -n -p
 
-.PHONY: clean doc
+.PHONY: clean doc test

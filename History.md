@@ -1,3 +1,6 @@
+### 1.1.3
+* bind touchcancel event with document
+
 ### 1.1.2
 * Fix not works well when height < viewHeight
 
