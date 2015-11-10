@@ -1,3 +1,6 @@
+### 1.1.2
+* Fix not works well when height < viewHeight
+
 ### 1.1.1
 * Use user defined element for scroll
 
