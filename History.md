@@ -1,3 +1,6 @@
+### 1.1.5
+* add documentation
+
 ### 1.1.4
 * fix unbind not remove handlebar
 
