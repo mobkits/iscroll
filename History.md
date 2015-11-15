@@ -1,3 +1,6 @@
+### 1.1.6
+* improve height calculate
+
 ### 1.1.5
 * add documentation
 
