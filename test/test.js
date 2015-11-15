@@ -89,7 +89,6 @@ describe('.refresh()', function () {
     var h = scrollable.querySelector('ul').getBoundingClientRect().height
     is.refresh()
     assert.equal(is.height, h)
-    assert.equal(is.el.style.height, h + 'px')
   })
 })
 
