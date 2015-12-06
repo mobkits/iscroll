@@ -1,3 +1,7 @@
+### 1.1.9
+* bind touch events to scrollable
+* some code refactor
+
 ### 1.1.8
 * refresh on touchstart
 
