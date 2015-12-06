@@ -1,4 +1,4 @@
-/*global describe, it, beforEach, afterEach*/
+/*global describe, it, beforeEach, afterEach*/
 var Iscroll = require('..')
 var assert = require('assert')
 var Touch = require('touch-simulate')
@@ -93,26 +93,17 @@ describe('.refresh()', function () {
 })
 
 describe('touchstart', function () {
-  it('should get the postion at start', function () {
-    var x
-    var y
-    scrollable.addEventListener('touchstart', function (e) {
-      x = e.touches[0].pageX
-      y = e.touches[0].pageY
-    })
+  it('should get the onstart function at start', function () {
     var is = Iscroll(scrollable)
     appendChildren(20)
     is.refresh()
     var li = scrollable.querySelector('ul > li:first-child')
     var t = Touch(li, {speed: 0})
     t.start()
-    var down = is.down
-    assert.equal(down.x, x)
-    assert.equal(down.y, y)
-    assert.equal(down.start, 0)
+    assert.equal(typeof is.onstart, 'function')
   })
 
-  it('should show and resize handlebar at start', function () {
+  it('should show and resize handlebar if started', function () {
     var is = Iscroll(scrollable, {
       handlebar: true
     })
@@ -120,20 +111,37 @@ describe('touchstart', function () {
     is.refresh()
     var h = is.viewHeight * is.viewHeight/is.height
     var li = scrollable.querySelector('ul > li:first-child')
-    var t = Touch(li, {speed: 0})
-    t.start()
-    var s = is.handlebar.el.style
-    assert(parseInt(s.height, 10) - h < 1)
-    assert.notEqual(s.backgroundColor, 'rgba(0,0,0,0)')
+    var t = Touch(li, {speed: 200})
+    // no fire touchend
+    return t.start().moveDown(20, false).then(function () {
+      var s = is.handlebar.el.style
+      assert(parseInt(s.height, 10) < h)
+      assert.notEqual(s.backgroundColor, 'rgba(0,0,0,0)')
+    })
   })
 })
 
 describe('touchmove', function() {
+  it('should not scroll up if content height less than scrollable height', function () {
+    var is = Iscroll(scrollable, {
+      handlebar: true
+    })
+    appendChildren(2)
+    is.refresh()
+    assert.equal(scrollable.scrollTop, 0)
+    var li = scrollable.querySelector('ul > li:first-child')
+    var t = Touch(li, {speed: 80})
+    var p = t.moveUp(30)
+    return p.then(function () {
+      assert.equal(is.y, 0)
+    })
+  })
+
   it('should scroll when moving up', function () {
     var is = Iscroll(scrollable, {
       handlebar: true
     })
-    appendChildren(90)
+    appendChildren(200)
     is.refresh()
     assert.equal(scrollable.scrollTop, 0)
     var li = scrollable.querySelector('ul > li:first-child')
