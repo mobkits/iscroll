@@ -1,6 +1,9 @@
-### 1.1.9
+### 1.1.10
 * bind touch events to scrollable
 * some code refactor
+
+### 1.1.9
+* add max option
 
 ### 1.1.8
 * refresh on touchstart
