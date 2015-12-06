@@ -1,3 +1,9 @@
+### 1.1.8
+* refresh on touchstart
+
+### 1.1.7
+* no move if dy is 0
+
 ### 1.1.6
 * improve height calculate
 
