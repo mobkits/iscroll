@@ -48,6 +48,8 @@ el.addEventListener('scroll', function(e) {
 
 ## API
 
+* `start` event is fired with y (translated) on scroll start.
+
 * `release` event is fired with y (translated) on touchend.
 
 * `scroll` event is fired with y (Just as scrollTop on the element) on scroll.
