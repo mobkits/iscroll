@@ -1,3 +1,6 @@
+### 1.2.0
+* scrollTo return promise
+
 ### 1.1.10
 * bind touch events to scrollable
 * some code refactor
