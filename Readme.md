@@ -1,7 +1,9 @@
 # iscroll
 
-[![Build Status](https://secure.travis-ci.org/chemzqm/iscroll.svg)](http://travis-ci.org/chemzqm/iscroll)
-[![Coverage Status](https://coveralls.io/repos/chemzqm/iscroll/badge.svg?branch=master&service=github)](https://coveralls.io/github/chemzqm/iscroll?branch=master)
+[![NPM version](https://img.shields.io/npm/v/iscroll-component.svg?style=flat-square)](https://www.npmjs.com/package/iscroll-component)
+[![Dependency Status](https://img.shields.io/david/chemzqm/iscroll-component.svg?style=flat-square)](https://david-dm.org/chemzqm/iscroll-component)
+[![Build Status](https://img.shields.io/travis/chemzqm/iscroll/master.svg?style=flat-square)](http://travis-ci.org/chemzqm/iscroll)
+[![Coverage Status](https://img.shields.io/coveralls/chemzqm/iscroll/master.svg?style=flat-square)](https://coveralls.io/github/chemzqm/iscroll?branch=master)
 
 Improve the scrollable element in both ios and android.
 
