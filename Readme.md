@@ -1,7 +1,7 @@
 # iscroll
 
 [![NPM version](https://img.shields.io/npm/v/iscroll-component.svg?style=flat-square)](https://www.npmjs.com/package/iscroll-component)
-[![Dependency Status](https://img.shields.io/david/chemzqm/iscroll-component.svg?style=flat-square)](https://david-dm.org/chemzqm/iscroll-component)
+[![Dependency Status](https://img.shields.io/david/chemzqm/iscroll.svg?style=flat-square)](https://david-dm.org/chemzqm/iscroll)
 [![Build Status](https://img.shields.io/travis/chemzqm/iscroll/master.svg?style=flat-square)](http://travis-ci.org/chemzqm/iscroll)
 [![Coverage Status](https://img.shields.io/coveralls/chemzqm/iscroll/master.svg?style=flat-square)](https://coveralls.io/github/chemzqm/iscroll?branch=master)
 
