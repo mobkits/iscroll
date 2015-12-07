@@ -436,46 +436,33 @@
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(6)
-
-
-/***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var detect = __webpack_require__(7)
+	var detect = __webpack_require__(6)
 	var touchAction = detect.touchAction
 	var transform = detect.transform
 	var has3d = detect.has3d
-	var computedStyle = __webpack_require__(14)
-	var Emitter = __webpack_require__(15)
-	var events = __webpack_require__(16)
-	var Tween = __webpack_require__(22)
-	var raf = __webpack_require__(26)
-	var throttle = __webpack_require__(27)
-	var Handlebar = __webpack_require__(28)
+	var Emitter = __webpack_require__(13)
+	var events = __webpack_require__(14)
+	var Tween = __webpack_require__(20)
+	var raf = __webpack_require__(24)
+	var throttle = __webpack_require__(25)
+	var Handlebar = __webpack_require__(26)
 	var max = Math.max
 	var min = Math.min
-	var now = Date.now || function () {
-	  return (new Date()).getTime()
-	}
+	var now = Date.now
 	
 	var defineProperty = Object.defineProperty
 	
-	function lastVisible(el) {
-	  var nodes = el.childNodes
-	  for(var i = nodes.length - 1; i >=0; i --) {
-	    var node = nodes[i]
-	    if (node.nodeType === 1 && computedStyle(node, 'display') !== 'none') {
-	      return node
-	    }
-	  }
-	}
-	
+	/**
+	 * Create custom event
+	 *
+	 * @param {String} name
+	 * @return {Event}
+	 * @api private
+	 */
 	function customEvent(name) {
 	  var e
 	  try {
-	    e = new CustomEvent('scroll')
+	    e = new CustomEvent(name)
 	  } catch(error) {
 	    try {
 	      e = document.createEvent('CustomEvent')
@@ -488,36 +475,23 @@
 	}
 	
 	/**
-	 * Create a wrapper inside scrollable element
+	 * Init iscroll with el and optional options
+	 * options.handlebar show handlebar if is true
 	 *
 	 * @param  {Element}  el
-	 * @return {undefined}
+	 * @param {Object} opts
 	 * @api public
 	 */
-	function createWrapper(el) {
-	  var div = document.createElement('div')
-	  div.className = 'iscroll-wrapper'
-	  div.style.padding = '0px'
-	  div.style.margin = '0px'
-	  var fragment = document.createDocumentFragment()
-	  var children = el.children
-	  var l = children.length
-	  if (l !== 0) {
-	    for (var i = 0; i < l; i++) {
-	      fragment.appendChild(children[0])
-	    }
-	    div.appendChild(fragment)
-	  }
-	  el.appendChild(div)
-	  return div
-	}
-	
 	function Iscroll(el, opts) {
 	  if (! (this instanceof Iscroll)) return new Iscroll(el, opts)
 	  this.y = 0
 	  this.scrollable = el
 	  el.style.overflow = 'hidden'
-	  this.el = createWrapper(el)
+	  var children = el.children
+	  if (children.length !== 1) {
+	    throw new Error('iscroll need single element child of scrollable to work')
+	  }
+	  this.el = children[0]
 	  this.touchAction('none')
 	  this.refresh()
 	  this.bind()
@@ -537,6 +511,7 @@
 	    if (e) el.dispatchEvent(e)
 	  })
 	  opts = opts || {}
+	  this.max = opts.max || 80
 	  if (opts.handlebar) {
 	    this.handlebar = new Handlebar(el)
 	  }
@@ -547,121 +522,158 @@
 	
 	Emitter(Iscroll.prototype)
 	
+	/**
+	 * Bind events
+	 *
+	 * @api private
+	 */
 	Iscroll.prototype.bind = function () {
-	  this.events = events(this.el, this)
+	  this.events = events(this.scrollable, this)
 	  this.docEvents = events(document, this)
 	
 	   // W3C touch events
 	  this.events.bind('touchstart')
 	  this.events.bind('touchmove')
+	  this.events.bind('touchleave', 'ontouchend')
 	  this.docEvents.bind('touchend')
+	  this.docEvents.bind('touchcancel', 'ontouchend')
 	}
 	
 	/**
-	 * recalculate height
+	 * Recalculate the height
 	 *
 	 * @api public
 	 */
 	Iscroll.prototype.refresh = function () {
-	  var child = lastVisible(this.el)
-	  this.viewHeight = parseInt(computedStyle(this.scrollable, 'height'), 10)
-	  var cb = child.getBoundingClientRect().bottom
-	  var b = this.el.getBoundingClientRect().bottom
-	  var h = parseInt(computedStyle(this.el, 'height'), 10)
-	  this.height = h + (cb - b)
-	  this.el.style.height = this.height + 'px'
+	  this.viewHeight = this.scrollable.getBoundingClientRect().height
+	  this.height = this.el.getBoundingClientRect().height
+	  this.minY = min(0, this.viewHeight - this.height)
 	}
 	
+	/**
+	 * Unbind all event listeners, and remove handlebar if necessary
+	 *
+	 * @api public
+	 */
 	Iscroll.prototype.unbind = function () {
 	  this.off()
 	  this.events.unbind()
 	  this.docEvents.unbind()
 	  window.removeEventListener('orientationchange', this._refresh, false)
 	  window.removeEventListener('resize', this._refresh, false)
-	  if (this.handlebar) this.scrollable.removeChild(this.handlebar)
+	  if (this.handlebar) this.scrollable.removeChild(this.handlebar.el)
 	}
 	
-	Iscroll.prototype.restrict = function (y) {
-	  y = min(y , 80)
-	  y = max(y , this.viewHeight - this.height - 80)
-	  return y
-	}
 	
+	/**
+	 * touchstart event handler
+	 *
+	 * @param  {Event}  e
+	 * @api private
+	 */
 	Iscroll.prototype.ontouchstart = function (e) {
 	  this.speed = null
-	  this.leftright = null
 	  if (this.tween) this.tween.stop()
-	  this.dy = 0
-	  this.ts = now()
-	  if (this.handlebar) this.resizeHandlebar()
+	  this.refresh()
+	  var start = this.y
+	  if (e.target === this.scrollable) {
+	    start = min(start , 0)
+	    start = max(start , this.minY)
+	    // fix the invalid start position
+	    if (start !== this.y) return this.scrollTo(start, 200)
+	    return
+	  }
 	
 	  var touch = this.getTouch(e)
-	  this.pageY = touch.pageY
-	  this.down = {
-	    x: touch.pageX,
-	    y: touch.pageY,
-	    start: this.y,
-	    at: now()
+	  var sx = touch.clientX
+	  var sy = touch.clientY
+	
+	
+	  this.onstart = function (x, y) {
+	    // no moved up and down, so don't know
+	    if (sy === y) return
+	    this.onstart = null
+	    var dx = Math.abs(x - sx)
+	    var dy = Math.abs(y - sy)
+	    // move left and right
+	    if (dx !== 0 && dx > dy) return
+	    this.clientY = touch.clientY
+	    this.dy = 0
+	    this.ts = now()
+	    this.down = {
+	      x: sx,
+	      y: sy,
+	      start: start,
+	      at: now()
+	    }
+	    if (this.handlebar) this.resizeHandlebar()
+	    return true
 	  }
 	}
 	
+	/**
+	 * touchmove event handler
+	 *
+	 * @param  {Event}  e
+	 * @api private
+	 */
 	Iscroll.prototype.ontouchmove = function (e) {
 	  e.preventDefault()
-	  // do nothing if left right move
-	  if (e.touches.length > 1 || !this.down || this.leftright) return
+	  if (!this.down && !this.onstart) return
 	  var touch = this.getTouch(e)
-	
-	  var down = this.down
-	  var y = touch.pageY
-	  this.dy = y - down.y
-	
-	  // determine dy and the slope
-	  if (null == this.leftright) {
-	    var x = touch.pageX
-	    var dx = x - down.x
-	    var slope = dx / this.dy
-	
-	    // if is greater than 1 or -1, we're swiping up/down
-	    if (slope > 1 || slope < -1) {
-	      this.leftright = true
-	      if (this.handlebar) this.hideHandlebar()
-	      return
-	    } else {
-	      this.leftright = false
-	    }
+	  var x = touch.clientX
+	  var y = touch.clientY
+	  if (this.onstart) {
+	    var started = this.onstart(x, y)
+	    if (started !== true) return
 	  }
+	  var down = this.down
+	  var dy = this.dy = y - down.y
 	
 	  //calculate speed every 100 milisecond
-	  this.calcuteSpeed(y)
+	  this.calcuteSpeed(touch.clientY, down.at)
 	  var start = this.down.start
-	  var dest = this.restrict(start + this.dy)
+	  var dest = start + dy
+	  dest = min(dest , this.max)
+	  dest = max(dest , this.minY - this.max)
 	  this.translate(dest)
 	}
 	
-	Iscroll.prototype.calcuteSpeed = function (y) {
+	/**
+	 * Calcute speed by clientY
+	 *
+	 * @param {Number} y
+	 * @api priavte
+	 */
+	Iscroll.prototype.calcuteSpeed = function (y, start) {
 	  var ts = now()
-	  this.ts = this.ts || this.down.at
-	  this.pageY = (this.pageY == null) ? this.down.y : this.pageY
 	  var dt = ts - this.ts
-	  if (ts - this.down.at < 100) {
-	    this.distance = y - this.pageY
+	  if (ts - start < 100) {
+	    this.distance = y - this.clientY
 	    this.speed = Math.abs(this.distance/dt)
 	  } else if(dt > 100){
-	    this.distance = y - this.pageY
+	    this.distance = y - this.clientY
 	    this.speed = Math.abs(this.distance/dt)
 	    this.ts = ts
-	    this.pageY = y
+	    this.clientY = y
 	  }
 	}
 	
+	/**
+	 * Event handler for touchend
+	 *
+	 * @param  {Event}  e
+	 * @api private
+	 */
 	Iscroll.prototype.ontouchend = function (e) {
-	  if (!this.down || this.leftright) return
+	  if (!this.down) return
+	  var at = this.down.at
+	  this.down = null
 	  var touch = this.getTouch(e)
-	  this.calcuteSpeed(touch.pageY)
+	  this.calcuteSpeed(touch.clientY, at)
 	  var m = this.momentum()
 	  this.scrollTo(m.dest, m.duration, m.ease)
 	  this.emit('release', this.y)
-	  this.down = null
 	}
 	
 	/**
@@ -673,24 +685,22 @@
 	Iscroll.prototype.momentum = function () {
 	  var deceleration = 0.0004
 	  var speed = this.speed
-	  speed = min(speed, 0.8)
-	  var destination = this.y + ( speed * speed ) / ( 2 * deceleration ) * ( this.distance < 0 ? -1 : 1 )
+	  speed = min(speed, 0.6)
+	  var y = this.y
+	  var destination = y + ( speed * speed ) / ( 2 * deceleration ) * ( this.distance < 0 ? -1 : 1 )
 	  var duration = speed / deceleration
-	  var newY, ease
-	  if (destination > 0) {
-	    newY = 0
-	    ease = 'out-back'
-	  } else if (destination < this.viewHeight - this.height) {
-	    newY = this.viewHeight - this.height
-	    ease = 'out-back'
-	  }
-	  if (typeof newY === 'number') {
-	    duration = duration*(newY - this.y + 160)/(destination - this.y)
-	    destination = newY
-	  }
-	  if (this.y > 0 || this.y < this.viewHeight - this.height) {
-	    duration = 500
+	  var ease
+	  var minY = this.minY
+	  if (y > 0 || y < minY) {
+	    duration = 400
 	    ease = 'out-circ'
+	    destination = y > 0 ? 0 : minY
+	  } else if (destination > 0) {
+	    destination = 0
+	    ease = 'out-back'
+	  } else if (destination < minY) {
+	    destination = minY
+	    ease = 'out-back'
 	  }
 	  return {
 	    dest: destination,
@@ -700,12 +710,20 @@
 	}
 	
 	
+	/**
+	 * Scroll to potions y with optional duration and ease function
+	 *
+	 * @param {Number} y
+	 * @param {Number} duration
+	 * @param {String} easing
+	 * @api public
+	 */
 	Iscroll.prototype.scrollTo = function (y, duration, easing) {
 	  if (this.tween) this.tween.stop()
-	  var intransition = (duration > 0 && y !== this.y)
-	  if (!intransition) {
-	    this.onScrollEnd()
-	    return this.translate(y)
+	  var transition = (duration > 0 && y !== this.y)
+	  if (!transition) {
+	    this.translate(y)
+	    return this.onScrollEnd()
 	  }
 	
 	  easing = easing || 'out-cube'
@@ -718,12 +736,14 @@
 	  tween.update(function(o) {
 	    self.translate(o.y)
 	  })
-	
-	  tween.on('end', function () {
-	    animate = function(){} // eslint-disable-line
-	    if (!tween.stopped) {
-	      self.onScrollEnd()
-	    }
+	  var promise = new Promise(function (resolve) {
+	    tween.on('end', function () {
+	      resolve()
+	      animate = function(){} // eslint-disable-line
+	      if (!tween.stopped) {
+	        self.onScrollEnd()
+	      }
+	    })
 	  })
 	
 	  function animate() {
@@ -732,8 +752,14 @@
 	  }
 	
 	  animate()
+	  return promise
 	}
 	
+	/**
+	 * Scrollend
+	 *
+	 * @api private
+	 */
 	Iscroll.prototype.onScrollEnd = function () {
 	  this.hideHandlebar()
 	  var top = this.y === 0
@@ -799,6 +825,11 @@
 	  }
 	}
 	
+	/**
+	 * Transform handlebar
+	 *
+	 * @api private
+	 */
 	Iscroll.prototype.transformHandlebar = throttle(function(){
 	  var vh = this.viewHeight
 	  var h = this.height
@@ -817,6 +848,11 @@
 	  this.handlebar.resize(h)
 	}
 	
+	/**
+	 * Hide handlebar
+	 *
+	 * @api private
+	 */
 	Iscroll.prototype.hideHandlebar = function () {
 	  if (this.handlebar) this.handlebar.hide()
 	}
@@ -825,30 +861,30 @@
 
 
 /***/ },
-/* 7 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports.transition = __webpack_require__(8)
+	exports.transition = __webpack_require__(7)
 	
-	exports.transform = __webpack_require__(9)
+	exports.transform = __webpack_require__(8)
 	
-	exports.touchAction = __webpack_require__(10)
+	exports.touchAction = __webpack_require__(9)
 	
-	exports.transitionend = __webpack_require__(11)
+	exports.transitionend = __webpack_require__(10)
 	
-	exports.has3d = __webpack_require__(12)
+	exports.has3d = __webpack_require__(11)
 
 
 /***/ },
-/* 8 */
+/* 7 */
 /***/ function(module, exports) {
 
 	var styles = [
-	  'transition',
 	  'webkitTransition',
 	  'MozTransition',
 	  'OTransition',
-	  'msTransition'
+	  'msTransition',
+	  'transition'
 	]
 	
 	var el = document.createElement('p')
@@ -866,7 +902,7 @@
 
 
 /***/ },
-/* 9 */
+/* 8 */
 /***/ function(module, exports) {
 
 	
@@ -891,7 +927,7 @@
 
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports) {
 
 	
@@ -917,7 +953,7 @@
 
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports) {
 
 	/**
@@ -947,11 +983,11 @@
 
 
 /***/ },
-/* 12 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
-	var prop = __webpack_require__(13);
+	var prop = __webpack_require__(12);
 	
 	// IE <=8 doesn't have `getComputedStyle`
 	if (!prop || !window.getComputedStyle) {
@@ -977,7 +1013,7 @@
 
 
 /***/ },
-/* 13 */
+/* 12 */
 /***/ function(module, exports) {
 
 	
@@ -1002,40 +1038,7 @@
 
 
 /***/ },
-/* 14 */
-/***/ function(module, exports) {
-
-	// DEV: We don't use var but favor parameters since these play nicer with minification
-	function computedStyle(el, prop, getComputedStyle, style) {
-	  getComputedStyle = window.getComputedStyle;
-	  style =
-	      // If we have getComputedStyle
-	      getComputedStyle ?
-	        // Query it
-	        // TODO: From CSS-Query notes, we might need (node, null) for FF
-	        getComputedStyle(el) :
-	
-	      // Otherwise, we are in IE and use currentStyle
-	        el.currentStyle;
-	  if (style) {
-	    return style
-	    [
-	      // Switch to camelCase for CSSOM
-	      // DEV: Grabbed from jQuery
-	      // https://github.com/jquery/jquery/blob/1.9-stable/src/css.js#L191-L194
-	      // https://github.com/jquery/jquery/blob/1.9-stable/src/core.js#L593-L597
-	      prop.replace(/-(\w)/gi, function (word, letter) {
-	        return letter.toUpperCase();
-	      })
-	    ];
-	  }
-	}
-	
-	module.exports = computedStyle;
-
-
-/***/ },
-/* 15 */
+/* 13 */
 /***/ function(module, exports) {
 
 	
@@ -1202,7 +1205,7 @@
 
 
 /***/ },
-/* 16 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1210,8 +1213,8 @@
 	 * Module dependencies.
 	 */
 	
-	var events = __webpack_require__(17);
-	var delegate = __webpack_require__(18);
+	var events = __webpack_require__(15);
+	var delegate = __webpack_require__(16);
 	
 	/**
 	 * Expose `Events`.
@@ -1384,7 +1387,7 @@
 
 
 /***/ },
-/* 17 */
+/* 15 */
 /***/ function(module, exports) {
 
 	var bind = window.addEventListener ? 'addEventListener' : 'attachEvent',
@@ -1424,15 +1427,15 @@
 	};
 
 /***/ },
-/* 18 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Module dependencies.
 	 */
 	
-	var closest = __webpack_require__(19)
-	  , event = __webpack_require__(17);
+	var closest = __webpack_require__(17)
+	  , event = __webpack_require__(15);
 	
 	/**
 	 * Delegate event `type` to `selector`
@@ -1472,14 +1475,14 @@
 
 
 /***/ },
-/* 19 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Module Dependencies
 	 */
 	
-	var matches = __webpack_require__(20)
+	var matches = __webpack_require__(18)
 	
 	/**
 	 * Export `closest`
@@ -1510,14 +1513,14 @@
 
 
 /***/ },
-/* 20 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Module dependencies.
 	 */
 	
-	var query = __webpack_require__(21);
+	var query = __webpack_require__(19);
 	
 	/**
 	 * Element prototype.
@@ -1562,7 +1565,7 @@
 
 
 /***/ },
-/* 21 */
+/* 19 */
 /***/ function(module, exports) {
 
 	function one(selector, el) {
@@ -1589,7 +1592,7 @@
 
 
 /***/ },
-/* 22 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1597,10 +1600,10 @@
 	 * Module dependencies.
 	 */
 	
-	var Emitter = __webpack_require__(15);
-	var clone = __webpack_require__(23);
-	var type = __webpack_require__(24);
-	var ease = __webpack_require__(25);
+	var Emitter = __webpack_require__(13);
+	var clone = __webpack_require__(21);
+	var type = __webpack_require__(22);
+	var ease = __webpack_require__(23);
 	
 	/**
 	 * Expose `Tween`.
@@ -1772,7 +1775,7 @@
 	};
 
 /***/ },
-/* 23 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1781,9 +1784,9 @@
 	
 	var type;
 	try {
-	  type = __webpack_require__(24);
+	  type = __webpack_require__(22);
 	} catch (_) {
-	  type = __webpack_require__(24);
+	  type = __webpack_require__(22);
 	}
 	
 	/**
@@ -1835,7 +1838,7 @@
 
 
 /***/ },
-/* 24 */
+/* 22 */
 /***/ function(module, exports) {
 
 	/**
@@ -1875,7 +1878,7 @@
 
 
 /***/ },
-/* 25 */
+/* 23 */
 /***/ function(module, exports) {
 
 	
@@ -2051,7 +2054,7 @@
 
 
 /***/ },
-/* 26 */
+/* 24 */
 /***/ function(module, exports) {
 
 	/**
@@ -2091,7 +2094,7 @@
 
 
 /***/ },
-/* 27 */
+/* 25 */
 /***/ function(module, exports) {
 
 	module.exports = throttle;
@@ -2129,10 +2132,10 @@
 
 
 /***/ },
-/* 28 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var detect = __webpack_require__(7)
+	var detect = __webpack_require__(6)
 	var has3d = detect.has3d
 	var transform = detect.transform
 	
