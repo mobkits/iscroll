@@ -21,6 +21,14 @@ function appendChildren(count) {
   }
 }
 
+function delay(ms) {
+  return new Promise(function (resolve) {
+    setTimeout(function () {
+      resolve(ms)
+    }, ms)
+  })
+}
+
 beforeEach(function (done) {
   scrollable = document.createElement('div')
   assign(scrollable.style, {
@@ -122,7 +130,28 @@ describe('touchstart', function () {
 })
 
 describe('touchmove', function() {
-  it('should not scroll up if content height less than scrollable height', function () {
+
+  it('should scroll back when reached bottom', function () {
+    var is = Iscroll(scrollable)
+    appendChildren(100)
+    is.refresh()
+    var li = scrollable.querySelector('ul > li:first-child')
+    var t = Touch(li, {speed: 200})
+    var top = is.height - is.viewHeight
+    is.scrollTo(- top, 100, 'linear')
+    return t.wait(120).then(function () {
+      assert.equal(is.y, - top)
+    }).then(function () {
+      t.start()
+      return t.moveUp(30)
+    }).then(function () {
+      return delay(800)
+    }).then(function () {
+      assert.equal(- is.y, top)
+    })
+  })
+
+  it('should scroll up and reset if content height less than scrollable height', function () {
     var is = Iscroll(scrollable, {
       handlebar: true
     })
@@ -130,10 +159,15 @@ describe('touchmove', function() {
     is.refresh()
     assert.equal(scrollable.scrollTop, 0)
     var li = scrollable.querySelector('ul > li:first-child')
-    var t = Touch(li, {speed: 80})
-    var p = t.moveUp(30)
+    var t = Touch(li, {speed: 300})
+    t.start()
+    var p = t.moveDown(30)
     return p.then(function () {
-      assert.equal(is.y, 0)
+      assert(is.y > 0)
+    }).then(function () {
+      is.once('scrollend', function () {
+        assert.equal(is.y, 0)
+      })
     })
   })
 
@@ -181,16 +215,24 @@ describe('touchmove', function() {
     })
   })
 
-  it('should not change scroll when move up and view height bigger than content height', function () {
+  it('should reset scrollTop if start stat is invalid', function () {
     var is = Iscroll(scrollable)
-    appendChildren(5)
+    appendChildren(1)
     is.refresh()
     assert.equal(scrollable.scrollTop, 0)
     var li = scrollable.querySelector('ul > li:first-child')
     var t = Touch(li, {speed: 90})
-    var p = t.moveUp(10)
+    var p = t.moveUp(80, false)
     return p.then(function () {
-      assert.equal(scrollable.scrollTop, 0)
+      assert(scrollable.scrollTop > 60)
+      t.el = scrollable
+      t.start()
+      return new Promise(function (resolve) {
+        setTimeout(function () {
+          assert.equal(scrollable.scrollTop, 0)
+          resolve()
+        }, 300)
+      })
     })
   })
 
@@ -214,13 +256,12 @@ describe('touchmove', function() {
     is.refresh()
     assert.equal(scrollable.scrollTop, 0)
     var li = scrollable.querySelector('ul > li:first-child')
-    var t = Touch(li, {speed: 100})
-    var dis = 100
+    var t = Touch(li, {speed: 200})
+    var dis = 200
     var p = t.moveDown(dis)
     return p.then(function () {
-      var top = scrollable.scrollTop
-      // it's the upmost
-      assert.equal(top, -80)
+      // it's the default upmost
+      assert(is.y <= 80)
     })
   })
 
@@ -285,28 +326,30 @@ describe('touchend', function() {
     is.refresh()
     var li = scrollable.querySelector('ul > li:first-child')
     var t = Touch(li, {speed: 400})
-    var p = t.moveDown(20)
-    return p.then(function () {
-      return t.wait(1000)
-    }).then(function () {
-      assert.equal(scrollable.scrollTop, 0)
+    return is.scrollTo(-30, 100).then(function () {
+      var p = t.moveDown(28)
+      return p.then(function () {
+        return t.wait(600)
+      }).then(function () {
+        assert.equal(is.y, 0)
+      })
     })
   })
 
-  it('should not scroll when reached bottom', function () {
+  it('should reset to bottom after scrolling', function () {
     var is = Iscroll(scrollable)
     appendChildren(200)
     is.refresh()
     var li = scrollable.querySelector('ul > li:first-child')
     var t = Touch(li, {speed: 400})
-    var top = is.height = is.viewHeight
-    is.scrollTo(top, 100, 'linear')
-    t.wait(120).then(function () {
-      assert.equal(is.y, top)
-    }).then(function () {
-      return t.moveUp(30)
-    }).then(function () {
-      assert.equal(is.y, top)
+    var minY = is.minY
+    return is.scrollTo(minY + 30, 100).then(function () {
+      var p = t.moveUp(28)
+      return p.then(function () {
+        return t.wait(600)
+      }).then(function () {
+        assert(Math.abs(is.y - minY) < 10)
+      })
     })
   })
 })
