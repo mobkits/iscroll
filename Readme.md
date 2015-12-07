@@ -61,6 +61,7 @@ el.addEventListener('scroll', function(e) {
 Init iscroll with el and optional opts, set `opts.handlebar` to true if you want handlebar.
 
 * `opts.handlerbar` show handlerbar if ture, remember to copy the css file
+
 * `opts.max` set maxium translateY default 80
 
 ### .refresh()

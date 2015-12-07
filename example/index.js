@@ -29,7 +29,7 @@ if ('ontouchstart' in window) {
   })
 
   is.on('scrollend', function(e) {
-    //console.log(e)
+    console.log(e)
   })
 
 }
