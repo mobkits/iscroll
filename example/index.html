@@ -1,117 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Iscroll</title>
-  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1"/>
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <style>
-    body {
-      font: 500 14px/1.6 "Helvetica Neue", Helvetica, sans-serif;
-      padding: 0px;
-      background-color: #e8e8e8;
-      overflow: hidden;
-      margin: 0px;
-    }
-    * {
-      -webkit-box-sizing: border-box;
-      -moz-box-sizing: border-box;
-      box-sizing: border-box;
-    }
-    .container {
-      margin: 10px 10px 0 10px;
-      padding: 0px;
-      background-color: #FFF;
-      border-radius: 3px;
-      border: 1px solid #CCC;
-    }
-    .content {
-      list-style-type: none;
-      padding: 0;
-      margin: 0;
-    }
+  <head>
+    <meta charset="UTF-8">
+    <title>Iscroll</title>
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <style>
+      body {
+        font: 500 14px/1.6 "Helvetica Neue", Helvetica, sans-serif;
+        padding: 0px;
+        background-color: #e8e8e8;
+        overflow: hidden;
+        margin: 0px;
+      }
+      * {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+      .container {
+        margin: 10px 10px 0 10px;
+        padding: 0px;
+        background-color: #FFF;
+        border-radius: 3px;
+        border: 1px solid #CCC;
+      }
+      .content {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
 
-    .content > li {
-      border-bottom: 1px solid #0a0a0a;
-      color: #0A0A0A;
-      font-size: 80%;
-      line-height: 30px;
-      padding: 0 5px;
-    }
+      .content > li {
+        border-bottom: 1px solid #0a0a0a;
+        color: #0A0A0A;
+        font-size: 80%;
+        line-height: 30px;
+        padding: 0 5px;
+      }
 
-    .content > li {
-      border-bottom: initial;
-      font-weight: bolder;
-      line-height: 40px;
-      background: -moz-linear-gradient(top,#ffffff 0%,#f2f2f2 100%);
-      background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#ffffff),color-stop(100%,#f2f2f2));
-      background: -webkit-linear-gradient(top,#ffffff 0%,#f2f2f2 100%);
-      background: -o-linear-gradient(top,#ffffff 0%,#f2f2f2 100%);
-      background: -ms-linear-gradient(top,#ffffff 0%,#f2f2f2 100%);
-      background: linear-gradient(to bottom,#ffffff 0%,#f2f2f2 100%);
-      font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    }
-    ul > li {
-      list-style: none;
-      width: 100%;
-    }
-    .bottom {
-      text-align: center;
-      color: #333;
-      line-height: 30px;
-      color: #00A0E9;
-      padding: 10px 0;
-    }
-    .scrollable {
-    }
-    .scrollable {
-      position: fixed;
-      top: 30px;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      overflow-y: scroll;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-      -webkit-overflow-scrolling: touch;
-    }
-    #indicator {
-      height: 30px;
-      line-height: 30px;
-      text-align: center;
-      background-color: #fff;
-    }
-    #indicator > * {
-      width: 50%;
-      float: left;
-    }
-    #refresh {
-      position: absolute;
-      height: 30px;
-      width: 100%;
-      text-align: center;
-      top: -30px;
-    }
-  </style>
-</head>
-<body>
-  <div id="indicator">
-    <div id="log">0</div>
-    <div>
-      <button id="add">add</button>
-      <button id="top">top</button>
-    </div>
-  </div>
-  <div class="scrollable">
-    <div>
-      <div id="refresh">
-        pull to refresh
+      .content > li {
+        border-bottom: initial;
+        font-weight: bolder;
+        line-height: 40px;
+        background: -moz-linear-gradient(top,#ffffff 0%,#f2f2f2 100%);
+        background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#ffffff),color-stop(100%,#f2f2f2));
+        background: -webkit-linear-gradient(top,#ffffff 0%,#f2f2f2 100%);
+        background: -o-linear-gradient(top,#ffffff 0%,#f2f2f2 100%);
+        background: -ms-linear-gradient(top,#ffffff 0%,#f2f2f2 100%);
+        background: linear-gradient(to bottom,#ffffff 0%,#f2f2f2 100%);
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+      }
+      ul > li {
+        list-style: none;
+        width: 100%;
+      }
+      .bottom {
+        text-align: center;
+        color: #333;
+        line-height: 30px;
+        color: #00A0E9;
+        padding: 10px 0;
+      }
+      .scrollable {
+      }
+      .scrollable {
+        position: fixed;
+        top: 30px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow-y: scroll;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      #indicator {
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        background-color: #fff;
+      }
+      #indicator > * {
+        width: 50%;
+        float: left;
+      }
+      #refresh {
+        position: absolute;
+        height: 30px;
+        width: 100%;
+        text-align: center;
+        top: -30px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="indicator">
+      <div id="log">0</div>
+      <div>
+        <button id="add">add</button>
+        <button id="top">top</button>
       </div>
-      <ul class="content">
-        <li id="mobile"><strong style="color:red;">Iscroll is disabled as no touch event support</strong></li>
+    </div>
+    <div class="scrollable">
+      <div>
+        <div id="refresh">
+          pull to refresh
+        </div>
+        <ul class="content">
+          <li id="mobile"><strong style="color:red;">Iscroll is disabled as no touch event support</strong></li>
           <li>Lorem ipsum dolor sit amet,</li>
           <li>consectetur adipisici elit,</li>
           <li>sed eiusmod tempor incidunt ut</li>
@@ -197,8 +197,8 @@
           <li>Stet clita kasd gubergren,</li>
         </ul>
         <div class="bottom">Made by @chemzqm</div>
+      </div>
     </div>
-  </div>
-  <script src="bundle.js"></script>
-</body>
+    <script src="bundle.js"></script>
+  </body>
 </html>
