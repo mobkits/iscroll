@@ -52,7 +52,7 @@
     "karma-mocha": "^0.2.0",
     "karma-webpack": "^1.7.0",
     "karma-wrap-preprocessor": "^0.1.0",
-    "mocha": "^2.3.3",
+    "mocha": "^2.4.2",
     "mocha-loader": "^0.7.1",
     "style-loader": "^0.13.0",
     "touch-simulate": "0.1.1",
