@@ -1,4 +1,5 @@
 dev:
+	@chrome http://localhost:3000/example/index.html
 	@gulp
 
 standalone:
@@ -6,7 +7,7 @@ standalone:
 	@cp build/build.js iscroll.js
 
 test:
-	@open http://localhost:8080/bundle
+	@chrome http://localhost:8080/bundle
 	@webpack-dev-server 'mocha!./test/test.js' --inline --hot --debug
 
 test-karma:
