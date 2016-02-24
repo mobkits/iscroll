@@ -1,4 +1,3 @@
-require('../iscroll.css')
 var log = document.getElementById('log')
 document.getElementById('add').addEventListener('click', function(e) {
   var c = el.querySelector('.content')
@@ -29,7 +28,7 @@ if ('ontouchstart' in window) {
   })
 
   is.on('scrollend', function(e) {
-    //console.log(e)
+    console.log(e)
   })
 
 }

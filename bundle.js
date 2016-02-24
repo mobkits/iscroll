@@ -44,7 +44,6 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(1)
 	var log = document.getElementById('log')
 	document.getElementById('add').addEventListener('click', function(e) {
 	  var c = el.querySelector('.content')
@@ -67,7 +66,7 @@
 	
 	if ('ontouchstart' in window) {
 	  document.getElementById('mobile').style.display = 'none'
-	  var iscroll = __webpack_require__(5)
+	  var iscroll = __webpack_require__(1)
 	
 	  var is = iscroll(el, {
 	    handlebar: true,
@@ -75,7 +74,7 @@
 	  })
 	
 	  is.on('scrollend', function(e) {
-	    //console.log(e)
+	    console.log(e)
 	  })
 	
 	}
@@ -86,366 +85,16 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(2);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(4)(content, {"":true});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./node_modules/css-loader/index.js?sourceMap!./iscroll.css", function() {
-				var newContent = require("!!./node_modules/css-loader/index.js?sourceMap!./iscroll.css");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 2 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(3)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, ".iscroll-handlebar {\n  position: absolute;\n  right: 0px;\n  top: 0px;\n  transition: background-color 0.2s ease-out, transform 0.1s ease-out,width 0.1s ease-out, height 0.1s ease-out;\n  width: 4px;\n  border-radius: 2px;\n  background-color: rgba(0, 0, 0, 0);\n  z-index: 9999;\n  height: 0px;\n}\n", "", {"version":3,"sources":["/./iscroll.css"],"names":[],"mappings":"AAAA;EACE,mBAAmB;EACnB,WAAW;EACX,SAAS;EACT,8GAA8G;EAC9G,WAAW;EACX,mBAAmB;EACnB,mCAAmC;EACnC,cAAc;EACd,YAAY;CACb","file":"iscroll.css","sourcesContent":[".iscroll-handlebar {\n  position: absolute;\n  right: 0px;\n  top: 0px;\n  transition: background-color 0.2s ease-out, transform 0.1s ease-out,width 0.1s ease-out, height 0.1s ease-out;\n  width: 4px;\n  border-radius: 2px;\n  background-color: rgba(0, 0, 0, 0);\n  z-index: 9999;\n  height: 0px;\n}\n"],"sourceRoot":"webpack://"}]);
-	
-	// exports
-
-
-/***/ },
-/* 3 */
-/***/ function(module, exports) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	// css base code, injected by the css-loader
-	module.exports = function() {
-		var list = [];
-	
-		// return the list of modules as css string
-		list.toString = function toString() {
-			var result = [];
-			for(var i = 0; i < this.length; i++) {
-				var item = this[i];
-				if(item[2]) {
-					result.push("@media " + item[2] + "{" + item[1] + "}");
-				} else {
-					result.push(item[1]);
-				}
-			}
-			return result.join("");
-		};
-	
-		// import a list of modules into the list
-		list.i = function(modules, mediaQuery) {
-			if(typeof modules === "string")
-				modules = [[null, modules, ""]];
-			var alreadyImportedModules = {};
-			for(var i = 0; i < this.length; i++) {
-				var id = this[i][0];
-				if(typeof id === "number")
-					alreadyImportedModules[id] = true;
-			}
-			for(i = 0; i < modules.length; i++) {
-				var item = modules[i];
-				// skip already imported module
-				// this implementation is not 100% perfect for weird media query combinations
-				//  when a module is imported multiple times with different media queries.
-				//  I hope this will never occur (Hey this way we have smaller bundles)
-				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-					if(mediaQuery && !item[2]) {
-						item[2] = mediaQuery;
-					} else if(mediaQuery) {
-						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-					}
-					list.push(item);
-				}
-			}
-		};
-		return list;
-	};
-
-
-/***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	var stylesInDom = {},
-		memoize = function(fn) {
-			var memo;
-			return function () {
-				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-				return memo;
-			};
-		},
-		isOldIE = memoize(function() {
-			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
-		}),
-		getHeadElement = memoize(function () {
-			return document.head || document.getElementsByTagName("head")[0];
-		}),
-		singletonElement = null,
-		singletonCounter = 0,
-		styleElementsInsertedAtTop = [];
-	
-	module.exports = function(list, options) {
-		if(true) {
-			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-		}
-	
-		options = options || {};
-		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-		// tags it will allow on a page
-		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-	
-		// By default, add <style> tags to the bottom of <head>.
-		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-	
-		var styles = listToStyles(list);
-		addStylesToDom(styles, options);
-	
-		return function update(newList) {
-			var mayRemove = [];
-			for(var i = 0; i < styles.length; i++) {
-				var item = styles[i];
-				var domStyle = stylesInDom[item.id];
-				domStyle.refs--;
-				mayRemove.push(domStyle);
-			}
-			if(newList) {
-				var newStyles = listToStyles(newList);
-				addStylesToDom(newStyles, options);
-			}
-			for(var i = 0; i < mayRemove.length; i++) {
-				var domStyle = mayRemove[i];
-				if(domStyle.refs === 0) {
-					for(var j = 0; j < domStyle.parts.length; j++)
-						domStyle.parts[j]();
-					delete stylesInDom[domStyle.id];
-				}
-			}
-		};
-	}
-	
-	function addStylesToDom(styles, options) {
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			if(domStyle) {
-				domStyle.refs++;
-				for(var j = 0; j < domStyle.parts.length; j++) {
-					domStyle.parts[j](item.parts[j]);
-				}
-				for(; j < item.parts.length; j++) {
-					domStyle.parts.push(addStyle(item.parts[j], options));
-				}
-			} else {
-				var parts = [];
-				for(var j = 0; j < item.parts.length; j++) {
-					parts.push(addStyle(item.parts[j], options));
-				}
-				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-			}
-		}
-	}
-	
-	function listToStyles(list) {
-		var styles = [];
-		var newStyles = {};
-		for(var i = 0; i < list.length; i++) {
-			var item = list[i];
-			var id = item[0];
-			var css = item[1];
-			var media = item[2];
-			var sourceMap = item[3];
-			var part = {css: css, media: media, sourceMap: sourceMap};
-			if(!newStyles[id])
-				styles.push(newStyles[id] = {id: id, parts: [part]});
-			else
-				newStyles[id].parts.push(part);
-		}
-		return styles;
-	}
-	
-	function insertStyleElement(options, styleElement) {
-		var head = getHeadElement();
-		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-		if (options.insertAt === "top") {
-			if(!lastStyleElementInsertedAtTop) {
-				head.insertBefore(styleElement, head.firstChild);
-			} else if(lastStyleElementInsertedAtTop.nextSibling) {
-				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-			} else {
-				head.appendChild(styleElement);
-			}
-			styleElementsInsertedAtTop.push(styleElement);
-		} else if (options.insertAt === "bottom") {
-			head.appendChild(styleElement);
-		} else {
-			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-		}
-	}
-	
-	function removeStyleElement(styleElement) {
-		styleElement.parentNode.removeChild(styleElement);
-		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-		if(idx >= 0) {
-			styleElementsInsertedAtTop.splice(idx, 1);
-		}
-	}
-	
-	function createStyleElement(options) {
-		var styleElement = document.createElement("style");
-		styleElement.type = "text/css";
-		insertStyleElement(options, styleElement);
-		return styleElement;
-	}
-	
-	function createLinkElement(options) {
-		var linkElement = document.createElement("link");
-		linkElement.rel = "stylesheet";
-		insertStyleElement(options, linkElement);
-		return linkElement;
-	}
-	
-	function addStyle(obj, options) {
-		var styleElement, update, remove;
-	
-		if (options.singleton) {
-			var styleIndex = singletonCounter++;
-			styleElement = singletonElement || (singletonElement = createStyleElement(options));
-			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-		} else if(obj.sourceMap &&
-			typeof URL === "function" &&
-			typeof URL.createObjectURL === "function" &&
-			typeof URL.revokeObjectURL === "function" &&
-			typeof Blob === "function" &&
-			typeof btoa === "function") {
-			styleElement = createLinkElement(options);
-			update = updateLink.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-				if(styleElement.href)
-					URL.revokeObjectURL(styleElement.href);
-			};
-		} else {
-			styleElement = createStyleElement(options);
-			update = applyToTag.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-			};
-		}
-	
-		update(obj);
-	
-		return function updateStyle(newObj) {
-			if(newObj) {
-				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-					return;
-				update(obj = newObj);
-			} else {
-				remove();
-			}
-		};
-	}
-	
-	var replaceText = (function () {
-		var textStore = [];
-	
-		return function (index, replacement) {
-			textStore[index] = replacement;
-			return textStore.filter(Boolean).join('\n');
-		};
-	})();
-	
-	function applyToSingletonTag(styleElement, index, remove, obj) {
-		var css = remove ? "" : obj.css;
-	
-		if (styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = replaceText(index, css);
-		} else {
-			var cssNode = document.createTextNode(css);
-			var childNodes = styleElement.childNodes;
-			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-			if (childNodes.length) {
-				styleElement.insertBefore(cssNode, childNodes[index]);
-			} else {
-				styleElement.appendChild(cssNode);
-			}
-		}
-	}
-	
-	function applyToTag(styleElement, obj) {
-		var css = obj.css;
-		var media = obj.media;
-		var sourceMap = obj.sourceMap;
-	
-		if(media) {
-			styleElement.setAttribute("media", media)
-		}
-	
-		if(styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = css;
-		} else {
-			while(styleElement.firstChild) {
-				styleElement.removeChild(styleElement.firstChild);
-			}
-			styleElement.appendChild(document.createTextNode(css));
-		}
-	}
-	
-	function updateLink(linkElement, obj) {
-		var css = obj.css;
-		var media = obj.media;
-		var sourceMap = obj.sourceMap;
-	
-		if(sourceMap) {
-			// http://stackoverflow.com/a/26603875
-			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-		}
-	
-		var blob = new Blob([css], { type: "text/css" });
-	
-		var oldSrc = linkElement.href;
-	
-		linkElement.href = URL.createObjectURL(blob);
-	
-		if(oldSrc)
-			URL.revokeObjectURL(oldSrc);
-	}
-
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var detect = __webpack_require__(6)
+	var detect = __webpack_require__(2)
 	var touchAction = detect.touchAction
 	var transform = detect.transform
 	var has3d = detect.has3d
-	var Emitter = __webpack_require__(13)
-	var events = __webpack_require__(14)
-	var Tween = __webpack_require__(20)
-	var raf = __webpack_require__(24)
-	var throttle = __webpack_require__(25)
-	var Handlebar = __webpack_require__(26)
+	var Emitter = __webpack_require__(9)
+	var events = __webpack_require__(10)
+	var Tween = __webpack_require__(16)
+	var raf = __webpack_require__(20)
+	var throttle = __webpack_require__(21)
+	var Handlebar = __webpack_require__(22)
 	var max = Math.max
 	var min = Math.min
 	var now = Date.now
@@ -463,11 +112,11 @@
 	  var e
 	  try {
 	    e = new CustomEvent(name)
-	  } catch(error) {
+	  } catch (error) {
 	    try {
 	      e = document.createEvent('CustomEvent')
 	      e.initCustomEvent(name, false, false, 0)
-	    } catch(err) {
+	    } catch (err) {
 	      return
 	    }
 	  }
@@ -483,7 +132,7 @@
 	 * @api public
 	 */
 	function Iscroll(el, opts) {
-	  if (! (this instanceof Iscroll)) return new Iscroll(el, opts)
+	  if (!(this instanceof Iscroll)) return new Iscroll(el, opts)
 	  this.y = 0
 	  this.scrollable = el
 	  el.style.overflow = 'hidden'
@@ -498,15 +147,15 @@
 	  var self = this
 	  if (defineProperty) {
 	    defineProperty(this.scrollable, 'scrollTop', {
-	      set: function (v) {
+	      set: function(v) {
 	        return self.scrollTo(-v, 200)
 	      },
-	      get: function () {
-	        return - self.y
+	      get: function() {
+	        return -self.y
 	      }
 	    })
 	  }
-	  this.on('scroll', function () {
+	  this.on('scroll', function() {
 	    var e = customEvent('scroll')
 	    if (e) el.dispatchEvent(e)
 	  })
@@ -527,11 +176,11 @@
 	 *
 	 * @api private
 	 */
-	Iscroll.prototype.bind = function () {
+	Iscroll.prototype.bind = function() {
 	  this.events = events(this.scrollable, this)
 	  this.docEvents = events(document, this)
 	
-	   // W3C touch events
+	  // W3C touch events
 	  this.events.bind('touchstart')
 	  this.events.bind('touchmove')
 	  this.events.bind('touchleave', 'ontouchend')
@@ -544,7 +193,7 @@
 	 *
 	 * @api public
 	 */
-	Iscroll.prototype.refresh = function () {
+	Iscroll.prototype.refresh = function() {
 	  this.viewHeight = this.scrollable.getBoundingClientRect().height
 	  this.height = this.el.getBoundingClientRect().height
 	  this.minY = min(0, this.viewHeight - this.height)
@@ -555,7 +204,7 @@
 	 *
 	 * @api public
 	 */
-	Iscroll.prototype.unbind = function () {
+	Iscroll.prototype.unbind = function() {
 	  this.off()
 	  this.events.unbind()
 	  this.docEvents.unbind()
@@ -571,15 +220,15 @@
 	 * @param  {Event}  e
 	 * @api private
 	 */
-	Iscroll.prototype.ontouchstart = function (e) {
+	Iscroll.prototype.ontouchstart = function(e) {
 	  this.speed = null
 	  if (this.tween) this.tween.stop()
 	  this.refresh()
 	  var start = this.y
 	  if (e.target === this.scrollable) {
-	    start = min(start , 0)
-	    start = max(start , this.minY)
-	    // fix the invalid start position
+	    start = min(start, 0)
+	    start = max(start, this.minY)
+	      // fix the invalid start position
 	    if (start !== this.y) return this.scrollTo(start, 200)
 	    return
 	  }
@@ -587,16 +236,17 @@
 	  var touch = this.getTouch(e)
 	  var sx = touch.clientX
 	  var sy = touch.clientY
+	  var at = now()
 	
 	
-	  this.onstart = function (x, y) {
+	  this.onstart = function(x, y) {
 	    // no moved up and down, so don't know
 	    if (sy === y) return
 	    this.onstart = null
 	    var dx = Math.abs(x - sx)
 	    var dy = Math.abs(y - sy)
-	    // move left and right
-	    if (dx !== 0 && dx > dy) return
+	      // move left and right
+	    if (dx > dy) return
 	    this.clientY = touch.clientY
 	    this.dy = 0
 	    this.ts = now()
@@ -604,9 +254,10 @@
 	      x: sx,
 	      y: sy,
 	      start: start,
-	      at: now()
+	      at: at
 	    }
 	    if (this.handlebar) this.resizeHandlebar()
+	    this.emit('start', this.y)
 	    return true
 	  }
 	}
@@ -617,7 +268,7 @@
 	 * @param  {Event}  e
 	 * @api private
 	 */
-	Iscroll.prototype.ontouchmove = function (e) {
+	Iscroll.prototype.ontouchmove = function(e) {
 	  e.preventDefault()
 	  if (!this.down && !this.onstart) return
 	  var touch = this.getTouch(e)
@@ -634,8 +285,8 @@
 	  this.calcuteSpeed(touch.clientY, down.at)
 	  var start = this.down.start
 	  var dest = start + dy
-	  dest = min(dest , this.max)
-	  dest = max(dest , this.minY - this.max)
+	  dest = min(dest, this.max)
+	  dest = max(dest, this.minY - this.max)
 	  this.translate(dest)
 	}
 	
@@ -645,15 +296,15 @@
 	 * @param {Number} y
 	 * @api priavte
 	 */
-	Iscroll.prototype.calcuteSpeed = function (y, start) {
+	Iscroll.prototype.calcuteSpeed = function(y, start) {
 	  var ts = now()
 	  var dt = ts - this.ts
 	  if (ts - start < 100) {
 	    this.distance = y - this.clientY
-	    this.speed = Math.abs(this.distance/dt)
-	  } else if(dt > 100){
+	    this.speed = Math.abs(this.distance / dt)
+	  } else if (dt > 100) {
 	    this.distance = y - this.clientY
-	    this.speed = Math.abs(this.distance/dt)
+	    this.speed = Math.abs(this.distance / dt)
 	    this.ts = ts
 	    this.clientY = y
 	  }
@@ -665,7 +316,7 @@
 	 * @param  {Event}  e
 	 * @api private
 	 */
-	Iscroll.prototype.ontouchend = function (e) {
+	Iscroll.prototype.ontouchend = function(e) {
 	  if (!this.down) return
 	  var at = this.down.at
 	  this.down = null
@@ -682,17 +333,17 @@
 	 * @return {Object}
 	 * @api private
 	 */
-	Iscroll.prototype.momentum = function () {
-	  var deceleration = 0.0004
+	Iscroll.prototype.momentum = function() {
+	  var deceleration = 0.0008
 	  var speed = this.speed
-	  speed = min(speed, 0.6)
+	  speed = min(speed, 0.8)
 	  var y = this.y
-	  var destination = y + ( speed * speed ) / ( 2 * deceleration ) * ( this.distance < 0 ? -1 : 1 )
+	  var destination = y + (speed * speed) / (2 * deceleration) * (this.distance < 0 ? -1 : 1)
 	  var duration = speed / deceleration
 	  var ease
 	  var minY = this.minY
 	  if (y > 0 || y < minY) {
-	    duration = 400
+	    duration = 300
 	    ease = 'out-circ'
 	    destination = y > 0 ? 0 : minY
 	  } else if (destination > 0) {
@@ -718,7 +369,7 @@
 	 * @param {String} easing
 	 * @api public
 	 */
-	Iscroll.prototype.scrollTo = function (y, duration, easing) {
+	Iscroll.prototype.scrollTo = function(y, duration, easing) {
 	  if (this.tween) this.tween.stop()
 	  var transition = (duration > 0 && y !== this.y)
 	  if (!transition) {
@@ -727,19 +378,23 @@
 	  }
 	
 	  easing = easing || 'out-cube'
-	  var tween = this.tween = Tween({y : this.y})
-	      .ease(easing)
-	      .to({y: y})
-	      .duration(duration)
+	  var tween = this.tween = Tween({
+	      y: this.y
+	    })
+	    .ease(easing)
+	    .to({
+	      y: y
+	    })
+	    .duration(duration)
 	
 	  var self = this
 	  tween.update(function(o) {
 	    self.translate(o.y)
 	  })
-	  var promise = new Promise(function (resolve) {
-	    tween.on('end', function () {
+	  var promise = new Promise(function(resolve) {
+	    tween.on('end', function() {
 	      resolve()
-	      animate = function(){} // eslint-disable-line
+	      animate = function() {} // eslint-disable-line
 	      if (!tween.stopped) {
 	        self.onScrollEnd()
 	      }
@@ -760,13 +415,12 @@
 	 *
 	 * @api private
 	 */
-	Iscroll.prototype.onScrollEnd = function () {
+	Iscroll.prototype.onScrollEnd = function() {
 	  this.hideHandlebar()
-	  var top = this.y === 0
-	  var bottom = this.y === (this.viewHeight - this.height)
+	  var y = this.y
 	  this.emit('scrollend', {
-	    top: top,
-	    bottom: bottom
+	    top: y >= 0,
+	    bottom: y <= this.minY
 	  })
 	}
 	
@@ -777,7 +431,7 @@
 	 * @api private
 	 */
 	
-	Iscroll.prototype.getTouch = function(e){
+	Iscroll.prototype.getTouch = function(e) {
 	  // "mouse" and "Pointer" events just use the event object itself
 	  var touch = e
 	  if (e.changedTouches && e.changedTouches.length > 0) {
@@ -799,10 +453,10 @@
 	  var s = this.el.style
 	  if (isNaN(y)) return
 	  y = Math.floor(y)
-	  //reach the end
+	    //reach the end
 	  if (this.y !== y) {
 	    this.y = y
-	    this.emit('scroll', - y)
+	    this.emit('scroll', -y)
 	    if (this.handlebar) this.transformHandlebar()
 	  }
 	  if (has3d) {
@@ -818,7 +472,7 @@
 	 * @api private
 	 */
 	
-	Iscroll.prototype.touchAction = function(value){
+	Iscroll.prototype.touchAction = function(value) {
 	  var s = this.el.style
 	  if (touchAction) {
 	    s[touchAction] = value
@@ -830,12 +484,10 @@
 	 *
 	 * @api private
 	 */
-	Iscroll.prototype.transformHandlebar = throttle(function(){
+	Iscroll.prototype.transformHandlebar = throttle(function() {
 	  var vh = this.viewHeight
 	  var h = this.height
-	  var bh = vh - vh * vh/h
-	  var ih = h - vh
-	  var y = parseInt(- bh * this.y/ih)
+	  var y = Math.round(-(vh - vh * vh / h) * this.y / (h - vh))
 	  this.handlebar.translateY(y)
 	}, 100)
 	
@@ -843,8 +495,9 @@
 	 * show the handlebar and size it
 	 * @api public
 	 */
-	Iscroll.prototype.resizeHandlebar = function(){
-	  var h = this.viewHeight * this.viewHeight/this.height
+	Iscroll.prototype.resizeHandlebar = function() {
+	  var vh = this.viewHeight
+	  var h = vh * vh / this.height
 	  this.handlebar.resize(h)
 	}
 	
@@ -853,7 +506,7 @@
 	 *
 	 * @api private
 	 */
-	Iscroll.prototype.hideHandlebar = function () {
+	Iscroll.prototype.hideHandlebar = function() {
 	  if (this.handlebar) this.handlebar.hide()
 	}
 	
@@ -861,22 +514,22 @@
 
 
 /***/ },
-/* 6 */
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports.transition = __webpack_require__(7)
+	exports.transition = __webpack_require__(3)
 	
-	exports.transform = __webpack_require__(8)
+	exports.transform = __webpack_require__(4)
 	
-	exports.touchAction = __webpack_require__(9)
+	exports.touchAction = __webpack_require__(5)
 	
-	exports.transitionend = __webpack_require__(10)
+	exports.transitionend = __webpack_require__(6)
 	
-	exports.has3d = __webpack_require__(11)
+	exports.has3d = __webpack_require__(7)
 
 
 /***/ },
-/* 7 */
+/* 3 */
 /***/ function(module, exports) {
 
 	var styles = [
@@ -902,7 +555,7 @@
 
 
 /***/ },
-/* 8 */
+/* 4 */
 /***/ function(module, exports) {
 
 	
@@ -927,7 +580,7 @@
 
 
 /***/ },
-/* 9 */
+/* 5 */
 /***/ function(module, exports) {
 
 	
@@ -953,7 +606,7 @@
 
 
 /***/ },
-/* 10 */
+/* 6 */
 /***/ function(module, exports) {
 
 	/**
@@ -983,11 +636,11 @@
 
 
 /***/ },
-/* 11 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
-	var prop = __webpack_require__(12);
+	var prop = __webpack_require__(8);
 	
 	// IE <=8 doesn't have `getComputedStyle`
 	if (!prop || !window.getComputedStyle) {
@@ -1013,7 +666,7 @@
 
 
 /***/ },
-/* 12 */
+/* 8 */
 /***/ function(module, exports) {
 
 	
@@ -1038,7 +691,7 @@
 
 
 /***/ },
-/* 13 */
+/* 9 */
 /***/ function(module, exports) {
 
 	
@@ -1205,7 +858,7 @@
 
 
 /***/ },
-/* 14 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1213,8 +866,8 @@
 	 * Module dependencies.
 	 */
 	
-	var events = __webpack_require__(15);
-	var delegate = __webpack_require__(16);
+	var events = __webpack_require__(11);
+	var delegate = __webpack_require__(12);
 	
 	/**
 	 * Expose `Events`.
@@ -1387,7 +1040,7 @@
 
 
 /***/ },
-/* 15 */
+/* 11 */
 /***/ function(module, exports) {
 
 	var bind = window.addEventListener ? 'addEventListener' : 'attachEvent',
@@ -1427,15 +1080,15 @@
 	};
 
 /***/ },
-/* 16 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Module dependencies.
 	 */
 	
-	var closest = __webpack_require__(17)
-	  , event = __webpack_require__(15);
+	var closest = __webpack_require__(13)
+	  , event = __webpack_require__(11);
 	
 	/**
 	 * Delegate event `type` to `selector`
@@ -1475,14 +1128,14 @@
 
 
 /***/ },
-/* 17 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Module Dependencies
 	 */
 	
-	var matches = __webpack_require__(18)
+	var matches = __webpack_require__(14)
 	
 	/**
 	 * Export `closest`
@@ -1513,14 +1166,14 @@
 
 
 /***/ },
-/* 18 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Module dependencies.
 	 */
 	
-	var query = __webpack_require__(19);
+	var query = __webpack_require__(15);
 	
 	/**
 	 * Element prototype.
@@ -1565,7 +1218,7 @@
 
 
 /***/ },
-/* 19 */
+/* 15 */
 /***/ function(module, exports) {
 
 	function one(selector, el) {
@@ -1592,7 +1245,7 @@
 
 
 /***/ },
-/* 20 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1600,10 +1253,10 @@
 	 * Module dependencies.
 	 */
 	
-	var Emitter = __webpack_require__(13);
-	var clone = __webpack_require__(21);
-	var type = __webpack_require__(22);
-	var ease = __webpack_require__(23);
+	var Emitter = __webpack_require__(9);
+	var clone = __webpack_require__(17);
+	var type = __webpack_require__(18);
+	var ease = __webpack_require__(19);
 	
 	/**
 	 * Expose `Tween`.
@@ -1775,7 +1428,7 @@
 	};
 
 /***/ },
-/* 21 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1784,9 +1437,9 @@
 	
 	var type;
 	try {
-	  type = __webpack_require__(22);
+	  type = __webpack_require__(18);
 	} catch (_) {
-	  type = __webpack_require__(22);
+	  type = __webpack_require__(18);
 	}
 	
 	/**
@@ -1838,7 +1491,7 @@
 
 
 /***/ },
-/* 22 */
+/* 18 */
 /***/ function(module, exports) {
 
 	/**
@@ -1878,7 +1531,7 @@
 
 
 /***/ },
-/* 23 */
+/* 19 */
 /***/ function(module, exports) {
 
 	
@@ -2054,7 +1707,7 @@
 
 
 /***/ },
-/* 24 */
+/* 20 */
 /***/ function(module, exports) {
 
 	/**
@@ -2094,7 +1747,7 @@
 
 
 /***/ },
-/* 25 */
+/* 21 */
 /***/ function(module, exports) {
 
 	module.exports = throttle;
@@ -2132,10 +1785,10 @@
 
 
 /***/ },
-/* 26 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var detect = __webpack_require__(6)
+	var detect = __webpack_require__(2)
 	var has3d = detect.has3d
 	var transform = detect.transform
 	
@@ -2161,7 +1814,7 @@
 	handlebar.prototype.resize = function (h) {
 	  var s = this.el.style
 	  s.height = h + 'px'
-	  s.backgroundColor = 'rgba(0,0,0,0.3)'
+	  s.backgroundColor = 'rgba(0,0,0,0.5)'
 	}
 	
 	/**
