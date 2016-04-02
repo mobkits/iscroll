@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "connect-livereload": "^0.5.3",
-    "coveralls": "^2.11.4",
+    "coveralls": "^2.11.9",
     "css-loader": "^0.23.1",
     "gulp": "^3.9.0",
     "gulp-livereload": "^3.8.1",
