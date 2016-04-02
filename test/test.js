@@ -362,7 +362,7 @@ describe('emulate', function() {
     scrollable.scrollTop = 40
     var li = scrollable.querySelector('ul > li:first-child')
     var t = Touch(li, {speed: 400})
-    return t.wait(210).then(function () {
+    return t.wait(300).then(function () {
       assert.equal(is.y, -40)
     })
   })
