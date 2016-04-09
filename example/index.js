@@ -1,3 +1,4 @@
+require('../iscroll.css')
 var log = document.getElementById('log')
 document.getElementById('add').addEventListener('click', function(e) {
   var c = el.querySelector('.content')
