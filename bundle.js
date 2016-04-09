@@ -89,12 +89,12 @@
 	var touchAction = detect.touchAction
 	var transform = detect.transform
 	var has3d = detect.has3d
-	var Emitter = __webpack_require__(9)
-	var events = __webpack_require__(10)
-	var Tween = __webpack_require__(16)
-	var raf = __webpack_require__(20)
-	var throttle = __webpack_require__(21)
-	var Handlebar = __webpack_require__(22)
+	var Emitter = __webpack_require__(8)
+	var events = __webpack_require__(9)
+	var Tween = __webpack_require__(15)
+	var raf = __webpack_require__(19)
+	var throttle = __webpack_require__(20)
+	var Handlebar = __webpack_require__(21)
 	var max = Math.max
 	var min = Math.min
 	var now = Date.now
@@ -148,7 +148,7 @@
 	  if (defineProperty) {
 	    defineProperty(this.scrollable, 'scrollTop', {
 	      set: function(v) {
-	        return self.scrollTo(-v, 200)
+	        return self.scrollTo(-v, 400)
 	      },
 	      get: function() {
 	        return -self.y
@@ -197,6 +197,9 @@
 	  this.viewHeight = this.scrollable.getBoundingClientRect().height
 	  this.height = this.el.getBoundingClientRect().height
 	  this.minY = min(0, this.viewHeight - this.height)
+	  if (this.y < this.minY) {
+	    this.scrollTo(this.minY, 200)
+	  }
 	}
 	
 	/**
@@ -336,14 +339,15 @@
 	Iscroll.prototype.momentum = function() {
 	  var deceleration = 0.0008
 	  var speed = this.speed
-	  speed = min(speed, 0.8)
+	  speed = min(speed, 1.5)
 	  var y = this.y
-	  var destination = y + (speed * speed) / (2 * deceleration) * (this.distance < 0 ? -1 : 1)
+	  var rate = (4 - Math.PI)/2
+	  var destination = y + rate * (speed * speed) / (2 * deceleration) * (this.distance < 0 ? -1 : 1)
 	  var duration = speed / deceleration
 	  var ease
 	  var minY = this.minY
 	  if (y > 0 || y < minY) {
-	    duration = 300
+	    duration = 500
 	    ease = 'out-circ'
 	    destination = y > 0 ? 0 : minY
 	  } else if (destination > 0) {
@@ -640,7 +644,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	
-	var prop = __webpack_require__(8);
+	var prop = __webpack_require__(4);
 	
 	// IE <=8 doesn't have `getComputedStyle`
 	if (!prop || !window.getComputedStyle) {
@@ -667,31 +671,6 @@
 
 /***/ },
 /* 8 */
-/***/ function(module, exports) {
-
-	
-	var styles = [
-	  'webkitTransform',
-	  'MozTransform',
-	  'msTransform',
-	  'OTransform',
-	  'transform'
-	];
-	
-	var el = document.createElement('p');
-	var style;
-	
-	for (var i = 0; i < styles.length; i++) {
-	  style = styles[i];
-	  if (null != el.style[style]) {
-	    module.exports = style;
-	    break;
-	  }
-	}
-
-
-/***/ },
-/* 9 */
 /***/ function(module, exports) {
 
 	
@@ -858,7 +837,7 @@
 
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -866,8 +845,17 @@
 	 * Module dependencies.
 	 */
 	
-	var events = __webpack_require__(11);
-	var delegate = __webpack_require__(12);
+	try {
+	  var events = __webpack_require__(10);
+	} catch(err) {
+	  var events = __webpack_require__(10);
+	}
+	
+	try {
+	  var delegate = __webpack_require__(11);
+	} catch(err) {
+	  var delegate = __webpack_require__(11);
+	}
 	
 	/**
 	 * Expose `Events`.
@@ -1040,7 +1028,7 @@
 
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports) {
 
 	var bind = window.addEventListener ? 'addEventListener' : 'attachEvent',
@@ -1080,15 +1068,24 @@
 	};
 
 /***/ },
-/* 12 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Module dependencies.
 	 */
 	
-	var closest = __webpack_require__(13)
-	  , event = __webpack_require__(11);
+	try {
+	  var closest = __webpack_require__(12);
+	} catch(err) {
+	  var closest = __webpack_require__(12);
+	}
+	
+	try {
+	  var event = __webpack_require__(10);
+	} catch(err) {
+	  var event = __webpack_require__(10);
+	}
 	
 	/**
 	 * Delegate event `type` to `selector`
@@ -1128,14 +1125,18 @@
 
 
 /***/ },
-/* 13 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Module Dependencies
 	 */
 	
-	var matches = __webpack_require__(14)
+	try {
+	  var matches = __webpack_require__(13)
+	} catch (err) {
+	  var matches = __webpack_require__(13)
+	}
 	
 	/**
 	 * Export `closest`
@@ -1166,14 +1167,18 @@
 
 
 /***/ },
-/* 14 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Module dependencies.
 	 */
 	
-	var query = __webpack_require__(15);
+	try {
+	  var query = __webpack_require__(14);
+	} catch (err) {
+	  var query = __webpack_require__(14);
+	}
 	
 	/**
 	 * Element prototype.
@@ -1218,7 +1223,7 @@
 
 
 /***/ },
-/* 15 */
+/* 14 */
 /***/ function(module, exports) {
 
 	function one(selector, el) {
@@ -1245,7 +1250,7 @@
 
 
 /***/ },
-/* 16 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1253,10 +1258,10 @@
 	 * Module dependencies.
 	 */
 	
-	var Emitter = __webpack_require__(9);
-	var clone = __webpack_require__(17);
-	var type = __webpack_require__(18);
-	var ease = __webpack_require__(19);
+	var Emitter = __webpack_require__(8);
+	var clone = __webpack_require__(16);
+	var type = __webpack_require__(17);
+	var ease = __webpack_require__(18);
 	
 	/**
 	 * Expose `Tween`.
@@ -1428,7 +1433,7 @@
 	};
 
 /***/ },
-/* 17 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1437,9 +1442,9 @@
 	
 	var type;
 	try {
-	  type = __webpack_require__(18);
+	  type = __webpack_require__(17);
 	} catch (_) {
-	  type = __webpack_require__(18);
+	  type = __webpack_require__(17);
 	}
 	
 	/**
@@ -1491,7 +1496,7 @@
 
 
 /***/ },
-/* 18 */
+/* 17 */
 /***/ function(module, exports) {
 
 	/**
@@ -1531,7 +1536,7 @@
 
 
 /***/ },
-/* 19 */
+/* 18 */
 /***/ function(module, exports) {
 
 	
@@ -1707,7 +1712,7 @@
 
 
 /***/ },
-/* 20 */
+/* 19 */
 /***/ function(module, exports) {
 
 	/**
@@ -1747,7 +1752,7 @@
 
 
 /***/ },
-/* 21 */
+/* 20 */
 /***/ function(module, exports) {
 
 	module.exports = throttle;
@@ -1785,7 +1790,7 @@
 
 
 /***/ },
-/* 22 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var detect = __webpack_require__(2)
