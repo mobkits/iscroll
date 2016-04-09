@@ -686,9 +686,9 @@
 	 * @api private
 	 */
 	Iscroll.prototype.momentum = function() {
-	  var deceleration = 0.0008
+	  var deceleration = 0.001
 	  var speed = this.speed
-	  speed = min(speed, 1.5)
+	  speed = min(speed, 2)
 	  var y = this.y
 	  var rate = (4 - Math.PI)/2
 	  var destination = y + rate * (speed * speed) / (2 * deceleration) * (this.distance < 0 ? -1 : 1)
@@ -2168,7 +2168,7 @@
 	handlebar.prototype.resize = function (h) {
 	  var s = this.el.style
 	  s.height = h + 'px'
-	  s.backgroundColor = 'rgba(0,0,0,0.5)'
+	  s.backgroundColor = 'rgba(0,0,0,0.4)'
 	}
 	
 	/**
