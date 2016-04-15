@@ -90,13 +90,16 @@ describe('.refresh()', function () {
     assert(h != null)
   })
 
-  it('should recalculate the height', function () {
+  it('should recalculate the height', function (done) {
     var is = Iscroll(scrollable)
-    assert.equal(is.height, 0)
-    appendChildren(20)
-    var h = scrollable.querySelector('ul').getBoundingClientRect().height
-    is.refresh()
-    assert.equal(is.height, h)
+    assert.equal(is.height, scrollable.clientHeight)
+    appendChildren(100)
+    setTimeout(function () {
+      var h = scrollable.querySelector('ul').getBoundingClientRect().height
+      is.refresh()
+      assert.equal(is.height, h)
+      done()
+    }, 20)
   })
 })
 
@@ -115,13 +118,13 @@ describe('touchstart', function () {
     var is = Iscroll(scrollable, {
       handlebar: true
     })
-    appendChildren(30)
-    is.refresh()
-    var h = is.viewHeight * is.viewHeight/is.height
+    appendChildren(200)
     var li = scrollable.querySelector('ul > li:first-child')
     var t = Touch(li, {speed: 200})
     // no fire touchend
-    return t.start().moveDown(20, false).then(function () {
+    return t.start().moveDown(50, false).then(function () {
+      is.refresh()
+      var h = is.viewHeight * is.viewHeight/is.height
       var s = is.handlebar.el.style
       assert(parseInt(s.height, 10) < h)
       assert.notEqual(s.backgroundColor, 'rgba(0,0,0,0)')
