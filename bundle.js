@@ -447,6 +447,7 @@
 	var max = Math.max
 	var min = Math.min
 	var now = Date.now
+	var height = __webpack_require__(26)
 	
 	var defineProperty = Object.defineProperty
 	
@@ -491,7 +492,7 @@
 	  }
 	  this.el = children[0]
 	  this.touchAction('none')
-	  this.refresh()
+	  this.refresh(true)
 	  this.bind()
 	  var self = this
 	  if (defineProperty) {
@@ -542,12 +543,22 @@
 	 *
 	 * @api public
 	 */
-	Iscroll.prototype.refresh = function() {
-	  this.viewHeight = this.scrollable.getBoundingClientRect().height
-	  this.height = this.el.getBoundingClientRect().height
-	  this.minY = min(0, this.viewHeight - this.height)
+	Iscroll.prototype.refresh = function(noscroll) {
+	  var vh = this.viewHeight = this.scrollable.getBoundingClientRect().height
+	  var ch = this.el.getBoundingClientRect().height
+	  var h = Math.max(vh, height(this.el))
+	  if (ch !== h) {
+	    this.el.style.height = h + 'px'
+	    this.height = h
+	  } else {
+	    this.height = h
+	  }
+	  this.minY = min(0, vh - this.height)
+	  if (noscroll === true) return
 	  if (this.y < this.minY) {
-	    this.scrollTo(this.minY, 200)
+	    this.scrollTo(this.minY, 300)
+	  } else if (this.y > 0) {
+	    this.scrollTo(0, 300)
 	  }
 	}
 	
@@ -575,7 +586,7 @@
 	Iscroll.prototype.ontouchstart = function(e) {
 	  this.speed = null
 	  if (this.tween) this.tween.stop()
-	  this.refresh()
+	  this.refresh(true)
 	  var start = this.y
 	  if (e.target === this.scrollable) {
 	    start = min(start, 0)
@@ -2196,6 +2207,76 @@
 	}
 	
 	module.exports = handlebar
+
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var computedStyle = __webpack_require__(27)
+	
+	/**
+	 * Find last visible element
+	 *
+	 * @param  {Element}  el
+	 * @return {Element}
+	 */
+	function lastVisible(el) {
+	  var nodes = el.childNodes
+	  for(var i = nodes.length - 1; i >=0; i --) {
+	    var node = nodes[i]
+	    if (node.nodeType === 1 && computedStyle(node, 'display') !== 'none') {
+	      return node
+	    }
+	  }
+	}
+	
+	function height(node) {
+	  var child = lastVisible(node)
+	  var pb = parseInt(computedStyle(node, 'paddingBottom'), 10)
+	  var pt = parseInt(computedStyle(node, 'paddingTop'), 10)
+	  if (!child) return pb + pt
+	  var mb = pb ? parseInt(computedStyle(child, 'marginBottom'), 10) : 0
+	  var cb = child.getBoundingClientRect().bottom
+	  var r = node.getBoundingClientRect()
+	  var res = r.height + (cb - r.bottom) + mb + pb
+	  return res
+	}
+	
+	module.exports = height
+
+
+/***/ },
+/* 27 */
+/***/ function(module, exports) {
+
+	// DEV: We don't use var but favor parameters since these play nicer with minification
+	function computedStyle(el, prop, getComputedStyle, style) {
+	  getComputedStyle = window.getComputedStyle;
+	  style =
+	      // If we have getComputedStyle
+	      getComputedStyle ?
+	        // Query it
+	        // TODO: From CSS-Query notes, we might need (node, null) for FF
+	        getComputedStyle(el) :
+	
+	      // Otherwise, we are in IE and use currentStyle
+	        el.currentStyle;
+	  if (style) {
+	    return style
+	    [
+	      // Switch to camelCase for CSSOM
+	      // DEV: Grabbed from jQuery
+	      // https://github.com/jquery/jquery/blob/1.9-stable/src/css.js#L191-L194
+	      // https://github.com/jquery/jquery/blob/1.9-stable/src/core.js#L593-L597
+	      prop.replace(/-(\w)/gi, function (word, letter) {
+	        return letter.toUpperCase();
+	      })
+	    ];
+	  }
+	}
+	
+	module.exports = computedStyle;
 
 
 /***/ }
