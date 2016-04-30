@@ -72,6 +72,10 @@ Recalculate element height, call this after element height changed. (called auto
 
 Set translateY to `y` with optional duration(ms), called when you set `el.scrollTop`.
 
+### .unbind()
+
+Unbind all event listeners.
+
 ## Test
   npm install
   gulp
