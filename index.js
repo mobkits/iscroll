@@ -1,4 +1,5 @@
 require('../iscroll.css')
+
 var log = document.getElementById('log')
 document.getElementById('add').addEventListener('click', function(e) {
   var c = el.querySelector('.content')
@@ -19,18 +20,14 @@ el.addEventListener('scroll', function () {
   log.textContent = el.scrollTop
 })
 
-if ('ontouchstart' in window) {
-  document.getElementById('mobile').style.display = 'none'
-  var iscroll = require('..')
+document.getElementById('mobile').style.display = 'none'
+var iscroll = require('..')
 
-  var is = iscroll(el, {
-    handlebar: true,
-    autorefresh: false
-  })
+var is = iscroll(el, {
+  handlebar: true,
+  autorefresh: false
+})
 
-  is.on('scrollend', function(e) {
-    console.log(e)
-  })
-
-}
-
+is.on('scrollend', function(e) {
+  console.log(e)
+})
