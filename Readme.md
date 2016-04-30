@@ -5,9 +5,9 @@
 [![Build Status](https://img.shields.io/travis/chemzqm/iscroll/master.svg?style=flat-square)](http://travis-ci.org/chemzqm/iscroll)
 [![Coverage Status](https://img.shields.io/coveralls/chemzqm/iscroll/master.svg?style=flat-square)](https://coveralls.io/github/chemzqm/iscroll?branch=master)
 
-Improve the scrollable element in both ios and android.
+Improved scrollable element for desktop and touch device.
 
-The goal of this library is **high performance** and easy to use, while keep the code simplity.
+The goal of this library is **high performance** and easy to use, while keep the code simplicity.
 
 The scroll element is automatically refreshed when window resize or orientation change
 
