@@ -148,7 +148,7 @@ describe('touchmove', function() {
       t.start()
       return t.moveUp(30)
     }).then(function () {
-      return delay(800)
+      return delay(1000)
     }).then(function () {
       assert.equal(- is.y, top)
     })
