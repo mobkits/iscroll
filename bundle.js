@@ -579,15 +579,15 @@
 	  if (this.handlebar) this.scrollable.removeChild(this.handlebar.el)
 	}
 	
-	Iscroll.prototype.onwheel = throttle(function (dx, dy) {
+	Iscroll.prototype.onwheel = function (dx, dy) {
 	  if (Math.abs(dx) > Math.abs(dy)) return
 	  if (this.handlebar) this.resizeHandlebar()
 	  var y = this.y - dy
 	  if (y > 0) y = 0
 	  if (y < this.minY) y = this.minY
 	  if (y === this.y) return
-	  this.scrollTo(y, 16, 'linear')
-	})
+	  this.scrollTo(y, 20, 'linear')
+	}
 	
 	
 	/**
@@ -771,8 +771,9 @@
 	  var promise = new Promise(function(resolve) {
 	    tween.on('end', function() {
 	      resolve()
+	      self.animating = false
 	      animate = function() {} // eslint-disable-line
-	      if (!tween.stopped) {
+	      if (!tween.stopped) { // no emit scrollend if tween stopped
 	        self.onScrollEnd()
 	      }
 	    })
@@ -784,6 +785,7 @@
 	  }
 	
 	  animate()
+	  this.animating = true
 	  return promise
 	}
 	
@@ -793,13 +795,14 @@
 	 * @api private
 	 */
 	Iscroll.prototype.onScrollEnd = debounce(function() {
+	  if (this.animating) return
 	  this.hideHandlebar()
 	  var y = this.y
 	  this.emit('scrollend', {
 	    top: y >= 0,
 	    bottom: y <= this.minY
 	  })
-	}, 100)
+	}, 20)
 	
 	/**
 	 * Gets the appropriate "touch" object for the `e` event. The event may be from
