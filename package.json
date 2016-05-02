@@ -1,6 +1,6 @@
 {
   "name": "iscroll-component",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "description": "improved scrollable for element on all platform",
   "main": "lib/index.js",
   "scripts": {
