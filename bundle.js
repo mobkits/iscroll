@@ -441,13 +441,14 @@
 	var debounce = __webpack_require__(27)
 	var Handlebar = __webpack_require__(29)
 	var wheel = __webpack_require__(30)
+	var hasTouch = __webpack_require__(33)
+	var computedStyle = __webpack_require__(7)
 	var touchAction = detect.touchAction
 	var transform = detect.transform
 	var has3d = detect.has3d
 	var max = Math.max
 	var min = Math.min
 	var now = Date.now
-	var hasTouch = __webpack_require__(33)
 	
 	var defineProperty = Object.defineProperty
 	
@@ -486,11 +487,14 @@
 	  this.y = 0
 	  this.scrollable = el
 	  el.style.overflow = 'hidden'
-	  var children = el.children
-	  if (children.length !== 1) {
-	    throw new Error('iscroll need single element child of scrollable to work')
+	  var children = [].slice.call(el.children)
+	  var nodes = children.filter(function (node) {
+	    return computedStyle(node).position == 'static'
+	  })
+	  if (nodes.length !== 1) {
+	    throw new Error('iscroll need single position static child of scrollable to work')
 	  }
-	  this.el = children[0]
+	  this.el = nodes[0]
 	  this.touchAction('none')
 	  this.refresh(true)
 	  this.bind()
@@ -750,9 +754,12 @@
 	  if (this.tween) this.tween.stop()
 	  var transition = (duration > 0 && y !== this.y)
 	  if (!transition) {
+	    this.direction = 0
 	    this.translate(y)
 	    return this.onScrollEnd()
 	  }
+	
+	  this.direction = y > this.y ? -1 : 1
 	
 	  easing = easing || 'out-cube'
 	  var tween = this.tween = Tween({
