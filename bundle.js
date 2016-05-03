@@ -489,7 +489,7 @@
 	  el.style.overflow = 'hidden'
 	  var children = [].slice.call(el.children)
 	  var nodes = children.filter(function (node) {
-	    return computedStyle(node).position == 'static'
+	    return computedStyle(node, 'position') == 'static'
 	  })
 	  if (nodes.length !== 1) {
 	    throw new Error('iscroll need single position static child of scrollable to work')
