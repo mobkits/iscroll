@@ -9,7 +9,7 @@ Improved scrollable element for desktop and touch device.
 
 The goal of this library is **high performance** and easy to use, while keep the code simplicity.
 
-The scroll element is automatically refreshed when window resize or orientation change
+The scroll element is automatically refreshed on window resize, orientation change and scroll start.
 
 Tested on **Android > 2.2** and **IOS > 6**
 
@@ -68,7 +68,8 @@ Init iscroll with el and optional opts, set `opts.handlebar` to true if you want
 
 ### .refresh()
 
-Recalculate element height, call this after element height changed. (called automatically on touchstart).
+Recalculate element height, call this after element height changed.
+Called automatically on scroll start, orientation change and window resize.
 
 ### .scrollTo(y, [duration])
 
