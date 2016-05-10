@@ -497,6 +497,7 @@
 	  }
 	  var autorefresh = opts.autorefresh || true
 	  this.el = nodes[0]
+	  this.marginBottom = parseInt(computedStyle(this.el, 'margin-bottom'), 10)
 	  this.touchAction('none')
 	  this.refresh(true)
 	  this.bind()
@@ -560,7 +561,7 @@
 	 */
 	Iscroll.prototype.refresh = function(noscroll) {
 	  var sh = this.viewHeight = this.scrollable.getBoundingClientRect().height
-	  var ch = this.el.getBoundingClientRect().height
+	  var ch = this.el.getBoundingClientRect().height + this.marginBottom
 	  // at least clientHeight
 	  var h = this.height = Math.max(sh, height(this.el))
 	  this.minY = min(0, sh - h)
