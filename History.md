@@ -1,3 +1,43 @@
+1.7.0
+* add auto refresh option.
+
+1.6.3
+* refresh on mouse wheel.
+
+1.6.2
+* no mocha on deps
+
+1.6.1
+* allow other absolute positioned children for scrollable
+
+1.6.0
+* add direction for last scroll direction
+
+1.5.1
+* fix scroll end event for mouse wheel.
+
+1.5.0
+* add mouse wheel support
+
+1.4.0
+* inner element at least scrollable element height
+
+1.3.4
+* fix scroll animation
+
+1.3.3
+* no touch detect
+
+1.3.2
+* scrollTo miny if over scrolled on refresh
+
+1.3.1
+* limit scroll speed
+
+1.3.0
+* improve css style
+* increase deceleration
+
 1.2.2
 * fix toushstart down.at
 
