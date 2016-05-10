@@ -7,7 +7,7 @@ document.getElementById('add').addEventListener('click', function(e) {
     var node = document.createElement('li')
     node.textContent = i
     c.appendChild(node)
-    if (is) is.refresh()
+    //if (is) is.refresh()
   }
 }, false)
 

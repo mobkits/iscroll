@@ -53,7 +53,7 @@
 	    var node = document.createElement('li')
 	    node.textContent = i
 	    c.appendChild(node)
-	    if (is) is.refresh()
+	    //if (is) is.refresh()
 	  }
 	}, false)
 	
@@ -489,11 +489,13 @@
 	  el.style.overflow = 'hidden'
 	  var children = [].slice.call(el.children)
 	  var nodes = children.filter(function (node) {
-	    return computedStyle(node, 'position') == 'static'
+	    var pos = computedStyle(node, 'position')
+	    return  pos == 'static' || pos == 'relative'
 	  })
 	  if (nodes.length !== 1) {
-	    throw new Error('iscroll need single position static child of scrollable to work')
+	    throw new Error('iscroll need single position static/relative child of scrollable to work')
 	  }
+	  var autorefresh = opts.autorefresh || true
 	  this.el = nodes[0]
 	  this.touchAction('none')
 	  this.refresh(true)
@@ -521,6 +523,13 @@
 	  this._refresh = this.refresh.bind(this)
 	  window.addEventListener('orientationchange', this._refresh, false)
 	  window.addEventListener('resize', this._refresh, false)
+	  if (autorefresh) {
+	    this.interval = setInterval(function () {
+	      if (!self.down && !self.animating) {
+	        self.refresh()
+	      }
+	    }, 100)
+	  }
 	}
 	
 	Emitter(Iscroll.prototype)
@@ -550,16 +559,16 @@
 	 * @api public
 	 */
 	Iscroll.prototype.refresh = function(noscroll) {
-	  var vh = this.viewHeight = this.scrollable.getBoundingClientRect().height
+	  var sh = this.viewHeight = this.scrollable.getBoundingClientRect().height
 	  var ch = this.el.getBoundingClientRect().height
 	  // at least clientHeight
-	  var h = this.height = Math.max(vh, height(this.el))
-	  this.minY = min(0, vh - h)
+	  var h = this.height = Math.max(sh, height(this.el))
+	  this.minY = min(0, sh - h)
 	  // only change height when needed
 	  if (ch !== h) {
 	    this.el.style.height = h + 'px'
 	  }
-	  if (noscroll === true) return
+	  if (ch === h || noscroll === true) return
 	  if (this.y < this.minY) {
 	    this.scrollTo(this.minY, 300)
 	  } else if (this.y > 0) {
@@ -578,6 +587,7 @@
 	  this.docEvents.unbind()
 	  window.removeEventListener('orientationchange', this._refresh, false)
 	  window.removeEventListener('resize', this._refresh, false)
+	  if (this.interval) window.clearInterval(this.interval)
 	  if (this._wheelHandler) this.scrollable.removeEventListener('wheel', this._wheelHandler)
 	  if (this.handlebar) this.scrollable.removeChild(this.handlebar.el)
 	}
