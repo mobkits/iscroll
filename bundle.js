@@ -495,9 +495,11 @@
 	  if (nodes.length !== 1) {
 	    throw new Error('iscroll need single position static/relative child of scrollable to work')
 	  }
+	  opts = opts || {}
 	  var autorefresh = opts.autorefresh || true
 	  this.el = nodes[0]
-	  this.marginBottom = parseInt(computedStyle(this.el, 'margin-bottom'), 10)
+	  this.margin = parseInt(computedStyle(this.el, 'margin-bottom'), 10)
+	                + parseInt(computedStyle(this.el, 'margin-top'), 10)
 	  this.touchAction('none')
 	  this.refresh(true)
 	  this.bind()
@@ -516,7 +518,6 @@
 	    var e = customEvent('scroll')
 	    if (e) el.dispatchEvent(e)
 	  })
-	  opts = opts || {}
 	  this.max = opts.max || 80
 	  if (opts.handlebar) {
 	    this.handlebar = new Handlebar(el)
@@ -561,7 +562,7 @@
 	 */
 	Iscroll.prototype.refresh = function(noscroll) {
 	  var sh = this.viewHeight = this.scrollable.getBoundingClientRect().height
-	  var ch = this.el.getBoundingClientRect().height + this.marginBottom
+	  var ch = height(this.el) + this.margin
 	  // at least clientHeight
 	  var h = this.height = Math.max(sh, height(this.el))
 	  this.minY = min(0, sh - h)
@@ -938,11 +939,10 @@
 	  var pb = parseInt(computedStyle(node, 'paddingBottom'), 10)
 	  var pt = parseInt(computedStyle(node, 'paddingTop'), 10)
 	  if (!child) return pb + pt
+	  var r = node.getBoundingClientRect()
 	  var mb = pb ? parseInt(computedStyle(child, 'marginBottom'), 10) : 0
 	  var cb = child.getBoundingClientRect().bottom
-	  var r = node.getBoundingClientRect()
-	  var res = r.height + (cb - r.bottom) + mb + pb
-	  return res
+	  return cb - r.top + mb + pb
 	}
 	
 	module.exports = height
