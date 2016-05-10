@@ -186,7 +186,7 @@ describe('touchmove', function() {
     var p = t.moveUp(10)
     return p.then(function () {
       var d = scrollable.scrollTop - 10
-      assert(Math.abs(d) < 1)
+      assert(Math.abs(d) < 5)
     })
   })
 
@@ -366,7 +366,7 @@ describe('emulate', function() {
     var li = scrollable.querySelector('ul > li:first-child')
     var t = Touch(li, {speed: 400})
     return t.wait(300).then(function () {
-      assert.equal(is.y, -40)
+      assert(Math.abs(is.y + 40) < 5)
     })
   })
 
