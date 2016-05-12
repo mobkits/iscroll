@@ -522,6 +522,7 @@
 	  if (opts.handlebar) {
 	    this.handlebar = new Handlebar(el)
 	  }
+	  if (!hasTouch) this.resizeHandlebar()
 	  this._refresh = this.refresh.bind(this)
 	  window.addEventListener('orientationchange', this._refresh, false)
 	  window.addEventListener('resize', this._refresh, false)
@@ -562,9 +563,9 @@
 	 */
 	Iscroll.prototype.refresh = function(noscroll) {
 	  var sh = this.viewHeight = this.scrollable.getBoundingClientRect().height
-	  var ch = height(this.el) + this.margin
+	  var ch = this.el.getBoundingClientRect().height + this.margin
 	  // at least clientHeight
-	  var h = this.height = Math.max(sh, height(this.el))
+	  var h = this.height = Math.max(sh, height(this.el)) + this.margin
 	  this.minY = min(0, sh - h)
 	  // only change height when needed
 	  if (ch !== h) {
@@ -815,7 +816,7 @@
 	 */
 	Iscroll.prototype.onScrollEnd = debounce(function() {
 	  if (this.animating) return
-	  this.hideHandlebar()
+	  if (hasTouch) this.hideHandlebar()
 	  var y = this.y
 	  this.emit('scrollend', {
 	    top: y >= 0,
