@@ -93,14 +93,14 @@ describe('.refresh()', function () {
 
   it('should recalculate the height', function (done) {
     var is = Iscroll(scrollable)
-    assert.equal(is.height, scrollable.clientHeight)
+    assert(is.height < 10)
     appendChildren(100)
     setTimeout(function () {
       var h = scrollable.querySelector('ul').getBoundingClientRect().height
       is.refresh()
       assert.equal(is.height, h)
       done()
-    }, 20)
+    }, 30)
   })
 })
 
@@ -358,7 +358,7 @@ describe('touchend', function() {
   })
 })
 
-describe('emulate', function() {
+describe('simulate', function() {
   it('should scroll by set scrollTop', function () {
     var is = Iscroll(scrollable)
     appendChildren(200)
