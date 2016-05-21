@@ -1,6 +1,6 @@
 {
   "name": "iscroll-component",
-  "version": "1.7.6",
+  "version": "1.8.0",
   "description": "improved scrollable for element on all platform",
   "main": "lib/index.js",
   "scripts": {
@@ -35,9 +35,9 @@
     "computed-style": "^0.3.0",
     "debounce": "^1.0.0",
     "has-touch": "^1.0.1",
-    "height": "0.0.5",
     "mouse-wheel": "^1.1.0",
     "prop-detect": "^1.0.2",
+    "resizelistener": "0.0.1",
     "throttleit": "^1.0.0"
   },
   "devDependencies": {
@@ -60,6 +60,7 @@
     "karma-wrap-preprocessor": "^0.1.0",
     "mocha": "2.3.3",
     "mocha-loader": "^0.7.1",
+    "stack-source-map": "^1.0.5",
     "style-loader": "^0.13.0",
     "touch-simulate": "0.1.1",
     "webpack": "^1.12.2",

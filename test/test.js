@@ -1,4 +1,5 @@
 /*global describe, it, beforeEach, afterEach*/
+require('stack-source-map')()
 var Iscroll = require('..')
 var assert = require('assert')
 var Touch = require('touch-simulate')
