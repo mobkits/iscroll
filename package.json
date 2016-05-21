@@ -33,11 +33,12 @@
     "component-raf": "^1.2.0",
     "component-tween": "^1.2.0",
     "computed-style": "^0.3.0",
+    "custom-event": "^1.0.0",
     "debounce": "^1.0.0",
     "has-touch": "^1.0.1",
     "mouse-wheel": "^1.1.0",
     "prop-detect": "^1.0.2",
-    "resizelistener": "0.0.1",
+    "resizelistener": "0.0.2",
     "throttleit": "^1.0.0"
   },
   "devDependencies": {

@@ -1,3 +1,9 @@
+2.0.0
+* remove autorefresh (using setinterval), use resizelistener
+* remove using `height` for performance
+* handlerbar default to `true`
+* use `custom-event` component
+
 1.7.0
 * add auto refresh option.
 

@@ -9,9 +9,7 @@ Improved scrollable element for desktop and touch device.
 
 The goal of this library is **high performance** and easy to use, while keep the code simplicity.
 
-The scroll element is automatically refreshed on window resize, orientation change and scroll start.
-
-Tested on **Android > 2.2** and **IOS > 6**
+Tested on **Android > 2.2** and **IOS > 6**, not works on IE < 9.
 
 [demo](http://chemzqm.github.io/iscroll/)
 
@@ -62,9 +60,12 @@ el.addEventListener('scroll', function(e) {
 
 Init iscroll with el and optional opts, set `opts.handlebar` to true if you want handlebar.
 
-* `opts.handlebar` show handlebar if ture, remember to copy the css file
+* `opts.handlebar` set to false if you need disable handlebar
 
 * `opts.max` set maxium translateY default 80
+
+* `opts.barClass` className for handlebar element, use this to replace default
+  handlebar className which is `iscroll-handlebar`
 
 ### .refresh()
 
