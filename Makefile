@@ -7,8 +7,8 @@ standalone:
 	@cp build/build.js iscroll.js
 
 test:
-	@chrome http://localhost:8080/bundle
-	@webpack-dev-server 'mocha!./test/test.js' --inline --hot --debug
+	@open http://localhost:8080/bundle
+	@gulp webpack:test
 
 test-karma:
 	@node_modules/.bin/karma start --single-run

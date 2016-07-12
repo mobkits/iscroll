@@ -1,6 +1,5 @@
 /*global describe, it, beforeEach, afterEach*/
-require('stack-source-map')()
-var Iscroll = require('..')
+var Iscroll = require('../src/index.js')
 var assert = require('assert')
 var Touch = require('touch-simulate')
 
@@ -61,38 +60,28 @@ describe('Iscroll()', function () {
   })
 
   it('should init without new', function () {
-    var is = Iscroll(scrollable)
+    var is = new Iscroll(scrollable)
     assert.equal(is.el, scrollable.firstChild)
   })
 
   it('should init with option', function () {
-    var is = Iscroll(scrollable, {
+    var is = new Iscroll(scrollable, {
       handlebar: true
     })
     assert.equal(is.el, scrollable.firstChild)
   })
 
-  it('should throw if scrollable have more than one child', function () {
-    var err
-    scrollable.appendChild(document.createElement('div'))
-    try {
-    var is = Iscroll(scrollable)
-    } catch (e) {
-      err = e
-    }
-    assert(!!err.message)
-  })
 })
 
 describe('.refresh()', function () {
   it('should refresh when init', function () {
-    var is = Iscroll(scrollable)
+    var is = new Iscroll(scrollable)
     var h = is.height
     assert(h != null)
   })
 
   it('should recalculate the height', function (done) {
-    var is = Iscroll(scrollable)
+    var is = new Iscroll(scrollable)
     assert(is.height < 10)
     appendChildren(100)
     setTimeout(function () {
@@ -106,7 +95,7 @@ describe('.refresh()', function () {
 
 describe('touchstart', function () {
   it('should get the onstart function at start', function () {
-    var is = Iscroll(scrollable)
+    var is = new Iscroll(scrollable)
     appendChildren(20)
     is.refresh()
     var li = scrollable.querySelector('ul > li:first-child')
@@ -116,7 +105,7 @@ describe('touchstart', function () {
   })
 
   it('should show and resize handlebar if started', function () {
-    var is = Iscroll(scrollable, {
+    var is = new Iscroll(scrollable, {
       handlebar: true
     })
     appendChildren(200)
@@ -136,14 +125,14 @@ describe('touchstart', function () {
 describe('touchmove', function() {
 
   it('should scroll back when reached bottom', function () {
-    var is = Iscroll(scrollable)
+    var is = new Iscroll(scrollable)
     appendChildren(100)
     is.refresh()
     var li = scrollable.querySelector('ul > li:first-child')
     var t = Touch(li, {speed: 200})
     var top = is.height - is.viewHeight
     is.scrollTo(- top, 100, 'linear')
-    return t.wait(120).then(function () {
+    return t.wait(300).then(function () {
       assert.equal(is.y, - top)
     }).then(function () {
       t.start()
@@ -156,7 +145,7 @@ describe('touchmove', function() {
   })
 
   it('should scroll up and reset if content height less than scrollable height', function () {
-    var is = Iscroll(scrollable, {
+    var is = new Iscroll(scrollable, {
       handlebar: true
     })
     appendChildren(2)
@@ -176,7 +165,7 @@ describe('touchmove', function() {
   })
 
   it('should scroll when moving up', function () {
-    var is = Iscroll(scrollable, {
+    var is = new Iscroll(scrollable, {
       handlebar: true
     })
     appendChildren(200)
@@ -192,7 +181,7 @@ describe('touchmove', function() {
   })
 
   it('should not change scroll when moving right', function () {
-    var is = Iscroll(scrollable)
+    var is = new Iscroll(scrollable)
     appendChildren(20)
     assert.equal(scrollable.scrollTop, 0)
     is.refresh()
@@ -205,7 +194,7 @@ describe('touchmove', function() {
   })
 
   it('should not change scroll when moving left', function () {
-    var is = Iscroll(scrollable, {
+    var is = new Iscroll(scrollable, {
       handlebar: true
     })
     appendChildren(20)
@@ -220,7 +209,7 @@ describe('touchmove', function() {
   })
 
   it('should reset scrollTop if start stat is invalid', function () {
-    var is = Iscroll(scrollable)
+    var is = new Iscroll(scrollable)
     appendChildren(1)
     is.refresh()
     assert.equal(scrollable.scrollTop, 0)
@@ -241,7 +230,7 @@ describe('touchmove', function() {
   })
 
   it('should change scroll when move down and view height bigger than content height', function () {
-    var is = Iscroll(scrollable)
+    var is = new Iscroll(scrollable)
     appendChildren(5)
     is.refresh()
     assert.equal(scrollable.scrollTop, 0)
@@ -255,7 +244,7 @@ describe('touchmove', function() {
   })
 
   it('should restinct the scrollTop when scroll up', function () {
-    var is = Iscroll(scrollable)
+    var is = new Iscroll(scrollable)
     appendChildren(5)
     is.refresh()
     assert.equal(scrollable.scrollTop, 0)
@@ -270,7 +259,7 @@ describe('touchmove', function() {
   })
 
   it('should stop scrolling on touchstart', function () {
-    var is = Iscroll(scrollable)
+    var is = new Iscroll(scrollable)
     appendChildren(200)
     is.refresh()
     assert.equal(scrollable.scrollTop, 0)
@@ -292,7 +281,7 @@ describe('touchmove', function() {
 
 describe('touchend', function() {
   it('should emit release event on touchend', function () {
-    var is = Iscroll(scrollable)
+    var is = new Iscroll(scrollable)
     var fired
     appendChildren(80)
     is.refresh()
@@ -308,7 +297,7 @@ describe('touchend', function() {
   })
 
   it('should move forward if more content ahead', function () {
-    var is = Iscroll(scrollable)
+    var is = new Iscroll(scrollable)
     appendChildren(200)
     is.refresh()
     var li = scrollable.querySelector('ul > li:first-child')
@@ -318,14 +307,14 @@ describe('touchend', function() {
     return p.then(function () {
       d = Math.abs(scrollable.scrollTop - 20)
       assert(d < 3)
-      return t.wait(50)
+      return t.wait(200)
     }).then(function () {
       assert(scrollable.scrollTop - 20 > d)
     })
   })
 
   it('should reset to the top after scrolling', function () {
-    var is = Iscroll(scrollable)
+    var is = new Iscroll(scrollable)
     appendChildren(200)
     is.refresh()
     var li = scrollable.querySelector('ul > li:first-child')
@@ -341,7 +330,7 @@ describe('touchend', function() {
   })
 
   it('should reset to bottom after scrolling', function () {
-    var is = Iscroll(scrollable)
+    var is = new Iscroll(scrollable)
     appendChildren(200)
     is.refresh()
     var li = scrollable.querySelector('ul > li:first-child')
@@ -360,7 +349,7 @@ describe('touchend', function() {
 
 describe('simulate', function() {
   it('should scroll by set scrollTop', function () {
-    var is = Iscroll(scrollable)
+    var is = new Iscroll(scrollable)
     appendChildren(200)
     is.refresh()
     scrollable.scrollTop = 40
@@ -377,7 +366,7 @@ describe('simulate', function() {
       assert(e instanceof CustomEvent)
       arr.push(e)
     }, false)
-    var is = Iscroll(scrollable)
+    var is = new Iscroll(scrollable)
     appendChildren(200)
     is.refresh()
     var li = scrollable.querySelector('ul > li:first-child')
@@ -391,7 +380,7 @@ describe('simulate', function() {
 describe('.unbind()', function() {
   it('should unbind the event listeners', function () {
     var arr = []
-    var is = Iscroll(scrollable)
+    var is = new Iscroll(scrollable)
     is.on('scroll', function (e) {
       arr.push(e)
     }, false)
@@ -407,7 +396,7 @@ describe('.unbind()', function() {
 
   it('should remove handlebar', function () {
     var arr = []
-    var is = Iscroll(scrollable, {
+    var is = new Iscroll(scrollable, {
       handlebar: true
     })
     is.on('scroll', function (e) {

@@ -6,23 +6,16 @@ var gutil = require('gulp-util')
 var gulp = require('gulp')
 var inject = require('connect-livereload')()
 var path = require('path')
-var webpackConfig = {
-  entry: './example/index.js',
-  output: {
-    filename: 'bundle.js',
-    path: 'example'
-  },
-  module: {
-    loaders: [
-      { test: /\.html$/, loader: 'html' },
-      { test: /\.css$/, loader: 'style?!css?sourceMap' },
-      { test: /\.json$/, loader: 'json' }
-    ]
-  }
-}
+var WebpackDevServer = require('webpack-dev-server')
+// test entry file
+var testIndex = './test/test.js'
+// webpack-dev-sserve port
+var port = 8080
+
+var webpackConfig = require('./webpack.config')
 var myConfig = Object.create(webpackConfig)
 // for debugging
-myConfig.devtool = 'sourcemap'
+myConfig.devtool = 'cheap-mobule-eval-sourcemap'
 myConfig.debug = true
 
 var paths = {
@@ -62,4 +55,32 @@ gulp.task('webpack:build-dev', function (callback) {
     livereload.changed(outputFile)
     callback()
   })
+})
+
+gulp.task('webpack:test', function (callback) {
+  var entry = [
+    'stack-source-map/register.js',
+    'webpack-dev-server/client?http://localhost:' + port,
+    'webpack/hot/dev-server',
+    'mocha-notify!' + testIndex
+  ]
+
+  var config = Object.create(myConfig)
+  config.entry = entry
+  config.plugins = config.plugins || []
+  // webpack need this to send request to webpack-dev-server
+  config.plugins.push(new webpack.HotModuleReplacementPlugin())
+  // Get line of error in mocha
+  config.devtool = 'cheap-module-eval-source-map'
+  // must have
+  config.output.path = __dirname
+  var compiler = webpack(config)
+  config.module = myConfig.module
+  var server = new WebpackDevServer(compiler, {
+    publicPath: '/',
+    inline: true,
+    historyApiFallback: false,
+    stats: { colors: true }
+  })
+  server.listen(port, 'localhost', callback)
 })

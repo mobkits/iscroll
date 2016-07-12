@@ -21,9 +21,10 @@ el.addEventListener('scroll', function () {
 })
 
 document.getElementById('mobile').style.display = 'none'
-var iscroll = require('..')
 
-var is = iscroll(el, {
+var iscroll = require('../src/index')
+
+var is = new iscroll(el, {
   handlebar: true,
   autorefresh: false
 })

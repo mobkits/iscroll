@@ -25,7 +25,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'test/test.js': ['webpack']
+      'test/test.js': ['webpack', 'sourcemap']
     },
 
     // test results reporter to use
@@ -56,14 +56,19 @@ module.exports = function(config) {
     browsers: ['Firefox'],
 
     webpack: {
+      cache: true,
+      devtool: 'inline-source-map',
       module: {
         preLoaders: [
           // instrument only testing sources with Istanbul
           {
             test: /\.js$/,
-            include: path.resolve('lib/'),
-            loader: 'istanbul-instrumenter'
+            include: path.resolve('src/'),
+            loader: 'babel-istanbul?cacheDirectory',
           }
+        ],
+        loaders: [
+          {test: /\.js$/, exclude: /node_modules/, loader: 'babel?cacheDirectory'},
         ]
       }
     },
