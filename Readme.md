@@ -9,7 +9,7 @@ Improved scrollable element for desktop and touch device.
 
 The goal of this library is **high performance** and easy to use, while keep the code simplicity.
 
-Tested on **Android > 2.2** and **IOS > 6**, not works on IE < 9.
+Tested on **Android > 2.2**, **IOS > 6** , IE > 8 and other modern browsers.
 
 [demo](http://chemzqm.github.io/iscroll/)
 
@@ -34,8 +34,7 @@ You may need [webpack](https://webpack.github.io/) to build this lib
 </div>
 ```
 
-There should be a single `static` as child of scrollable element for iscroll to
-work.
+First element child is used as wrapper element
 
 ```js
 var Iscroll = require('iscroll');
