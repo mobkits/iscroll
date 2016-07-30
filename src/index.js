@@ -37,6 +37,7 @@ class Iscroll {
     this.el = el.firstElementChild
     this.margin = parseInt(computedStyle(this.el, 'margin-bottom'), 10)
                   + parseInt(computedStyle(this.el, 'margin-top'), 10)
+    this.margin = this.margin || 0
     this.touchAction('none')
     this.refresh(true)
     this.bind()
@@ -92,7 +93,11 @@ class Iscroll {
   refresh(noscroll) {
     const sh = this.viewHeight = this.scrollable.getBoundingClientRect().height
     const ch = this.height = this.el.getBoundingClientRect().height + this.margin
-    this.minY = min(0, sh - ch)
+    if (isNaN(sh) || isNaN(ch)) {
+      this.minY = 0
+    } else {
+      this.minY = min(0, sh - ch)
+    }
     if (noscroll === true) return
     if (this.y < this.minY) {
       this.scrollTo(this.minY, 300)
