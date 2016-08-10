@@ -12,13 +12,13 @@ import hasTouch from 'has-touch'
 import computedStyle from 'computed-style'
 import resizelistener from 'resizelistener'
 
-const max = Math.max
-const min = Math.min
-const now = Date.now || function () {
+let max = Math.max
+let min = Math.min
+let now = Date.now || function () {
   return (new Date()).getTime()
 }
 
-const defineProperty = Object.defineProperty
+let defineProperty = Object.defineProperty
 
 /**
  * Init iscroll with el and optional options
@@ -41,7 +41,7 @@ class Iscroll {
     this.touchAction('none')
     this.refresh(true)
     this.bind()
-    const self = this
+    let self = this
     if (defineProperty) {
       defineProperty(this.scrollable, 'scrollTop', {
         set(v) {
@@ -53,7 +53,7 @@ class Iscroll {
       })
     }
     this.on('scroll', () => {
-      const e = new CustomEvent('scroll')
+      let e = new CustomEvent('scroll')
       if (e) el.dispatchEvent(e)
     })
     this.max = opts.max || 80
@@ -91,8 +91,8 @@ class Iscroll {
    * @api public
    */
   refresh(noscroll) {
-    const sh = this.viewHeight = this.scrollable.getBoundingClientRect().height
-    const ch = this.height = this.el.getBoundingClientRect().height + this.margin
+    let sh = this.viewHeight = this.scrollable.getBoundingClientRect().height
+    let ch = this.height = this.el.getBoundingClientRect().height + this.margin
     if (isNaN(sh) || isNaN(ch)) {
       this.minY = 0
     } else {
@@ -149,18 +149,18 @@ class Iscroll {
       return
     }
 
-    const touch = this.getTouch(e)
-    const sx = touch.clientX
-    const sy = touch.clientY
-    const at = now()
+    let touch = this.getTouch(e)
+    let sx = touch.clientX
+    let sy = touch.clientY
+    let at = now()
 
 
     this.onstart = function(x, y) {
       // no moved up and down, so don't know
       if (sy === y) return
       this.onstart = null
-      const dx = Math.abs(x - sx)
-      const dy = Math.abs(y - sy)
+      let dx = Math.abs(x - sx)
+      let dy = Math.abs(y - sy)
         // move left and right
       if (dx > dy) return
       this.clientY = touch.clientY
@@ -187,22 +187,24 @@ class Iscroll {
   ontouchmove(e) {
     e.preventDefault()
     if (!this.down && !this.onstart) return
-    const touch = this.getTouch(e)
-    const x = touch.clientX
-    const y = touch.clientY
+    let touch = this.getTouch(e)
+    let x = touch.clientX
+    let y = touch.clientY
     if (this.onstart) {
-      const started = this.onstart(x, y)
+      let started = this.onstart(x, y)
       if (started !== true) return
     }
-    const down = this.down
-    const dy = this.dy = y - down.y
+    let down = this.down
+    let dy = this.dy = y - down.y
 
     //calculate speed every 100 milisecond
     this.calcuteSpeed(touch.clientY, down.at)
-    const start = this.down.start
+    let start = this.down.start
     let dest = start + dy
     dest = min(dest, this.max)
     dest = max(dest, this.minY - this.max)
+    e.stopPropagation()
+    e.stopImmediatePropagation()
     this.translate(dest)
   }
 
@@ -213,8 +215,8 @@ class Iscroll {
    * @api priavte
    */
   calcuteSpeed(y, start) {
-    const ts = now()
-    const dt = ts - this.ts
+    let ts = now()
+    let dt = ts - this.ts
     if (ts - start < 100) {
       this.distance = y - this.clientY
       this.speed = Math.abs(this.distance / dt)
@@ -234,11 +236,11 @@ class Iscroll {
    */
   ontouchend(e) {
     if (!this.down) return
-    const at = this.down.at
+    let at = this.down.at
     this.down = null
-    const touch = this.getTouch(e)
+    let touch = this.getTouch(e)
     this.calcuteSpeed(touch.clientY, at)
-    const m = this.momentum()
+    let m = this.momentum()
     this.scrollTo(m.dest, m.duration, m.ease)
     this.emit('release', this.y)
   }
@@ -250,15 +252,15 @@ class Iscroll {
    * @api private
    */
   momentum() {
-    const deceleration = 0.001
+    let deceleration = 0.001
     let speed = this.speed
     speed = min(speed, 2)
-    const y = this.y
-    const rate = (4 - Math.PI)/2
+    let y = this.y
+    let rate = (4 - Math.PI)/2
     let destination = y + rate * (speed * speed) / (2 * deceleration) * (this.distance < 0 ? -1 : 1)
     let duration = speed / deceleration
     let ease
-    const minY = this.minY
+    let minY = this.minY
     if (y > 0 || y < minY) {
       duration = 500
       ease = 'out-circ'
@@ -287,7 +289,7 @@ class Iscroll {
    */
   scrollTo(y, duration, easing) {
     if (this.tween) this.tween.stop()
-    const transition = (duration > 0 && y !== this.y)
+    let transition = (duration > 0 && y !== this.y)
     if (!transition) {
       this.direction = 0
       this.translate(y)
@@ -297,7 +299,7 @@ class Iscroll {
     this.direction = y > this.y ? -1 : 1
 
     easing = easing || 'out-circ'
-    const tween = this.tween = Tween({
+    let tween = this.tween = Tween({
         y: this.y
       })
       .ease(easing)
@@ -306,11 +308,11 @@ class Iscroll {
       })
       .duration(duration)
 
-    const self = this
+    let self = this
     tween.update(o => {
       self.translate(o.y)
     })
-    const promise = new Promise(resolve => {
+    let promise = new Promise(resolve => {
       tween.on('end', () => {
         resolve()
         self.animating = false
@@ -356,7 +358,7 @@ class Iscroll {
    */
 
   translate(y) {
-    const s = this.el.style
+    let s = this.el.style
     if (isNaN(y)) return
     y = Math.floor(y)
       //reach the end
@@ -383,7 +385,7 @@ class Iscroll {
    */
 
   touchAction(value) {
-    const s = this.el.style
+    let s = this.el.style
     if (touchAction) {
       s[touchAction] = value
     }
@@ -394,8 +396,8 @@ class Iscroll {
    * @api public
    */
   resizeHandlebar() {
-    const vh = this.viewHeight
-    const h = vh * vh / this.height
+    let vh = this.viewHeight
+    let h = vh * vh / this.height
     this.handlebar.resize(h)
   }
 
@@ -416,7 +418,7 @@ class Iscroll {
   onScrollEnd() {
     if (this.animating) return
     if (hasTouch) this.hideHandlebar()
-    const y = this.y
+    let y = this.y
     this.emit('scrollend', {
       top: y >= 0,
       bottom: y <= this.minY
@@ -429,9 +431,9 @@ class Iscroll {
   * @api private
   */
   transformHandlebar() {
-    const vh = this.viewHeight
-    const h = this.height
-    const y = Math.round(-(vh - vh * vh / h) * this.y / (h - vh))
+    let vh = this.viewHeight
+    let h = this.height
+    let y = Math.round(-(vh - vh * vh / h) * this.y / (h - vh))
     this.handlebar.translateY(y)
   }
 }
