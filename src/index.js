@@ -28,8 +28,9 @@ let defineProperty = Object.defineProperty
  * @param {Object} opts
  * @api public
  */
-class Iscroll {
+class Iscroll extends Emitter {
   constructor(el, opts) {
+    super()
     this.y = 0
     this.scrollable = el
     el.style.overflow = 'hidden'
@@ -254,7 +255,7 @@ class Iscroll {
   momentum() {
     let deceleration = 0.001
     let speed = this.speed
-    speed = min(speed, 2)
+    speed = min(speed, 4)
     let y = this.y
     let rate = (4 - Math.PI)/2
     let destination = y + rate * (speed * speed) / (2 * deceleration) * (this.distance < 0 ? -1 : 1)
@@ -262,15 +263,14 @@ class Iscroll {
     let ease
     let minY = this.minY
     if (y > 0 || y < minY) {
-      duration = 500
+      duration = 300
       ease = 'out-circ'
       destination = y > 0 ? 0 : minY
-    } else if (destination > 0) {
-      destination = 0
-      ease = 'out-back'
-    } else if (destination < minY) {
-      destination = minY
-      ease = 'out-back'
+    } else if (destination > 0 || destination < minY) {
+      let dis = destination - y
+      ease = outBack
+      destination = destination > 0 ? 0 : minY
+      duration = (1 - Math.abs((destination - y)/dis))*duration
     }
     return {
       dest: destination,
@@ -438,6 +438,9 @@ class Iscroll {
   }
 }
 
-Emitter(Iscroll.prototype)
+function outBack(n) {
+  var s = 1.20158;
+  return --n * n * ((s + 1) * n + s) + 1;
+}
 
 export default Iscroll
