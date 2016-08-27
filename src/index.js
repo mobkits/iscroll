@@ -267,10 +267,9 @@ class Iscroll extends Emitter {
       ease = 'out-circ'
       destination = y > 0 ? 0 : minY
     } else if (destination > 0 || destination < minY) {
-      let dis = destination - y
-      ease = outBack
-      destination = destination > 0 ? 0 : minY
-      duration = (1 - Math.abs((destination - y)/dis))*duration
+      ease = outBack;
+      destination = destination > 0 ? 0 : minY;
+      duration = 2 * Math.abs(destination - y + 40)/speed
     }
     return {
       dest: destination,
