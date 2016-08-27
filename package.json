@@ -59,6 +59,7 @@
     "coveralls": "^2.11.9",
     "css-loader": "^0.23.1",
     "gulp": "^3.9.1",
+    "gulp-live-serve": "^1.0.2",
     "gulp-livereload": "^3.8.1",
     "gulp-serve": "^1.4.0",
     "gulp-uglify": "^1.5.4",
