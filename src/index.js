@@ -360,8 +360,9 @@ class Iscroll extends Emitter {
     y = Math.floor(y)
       //reach the end
     if (this.y !== y) {
+      let dir = y < this.y ? 1 : -1
       this.y = y
-      this.emit('scroll', -y)
+      this.emit('scroll', -y, dir)
       if (this.handlebar) this.transformHandlebar()
     }
     if (has3d) {
