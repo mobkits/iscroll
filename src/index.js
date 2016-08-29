@@ -92,6 +92,7 @@ class Iscroll extends Emitter {
    * @api public
    */
   refresh(noscroll) {
+    if (this.animating) return
     let sh = this.viewHeight = this.scrollable.getBoundingClientRect().height
     let ch = this.height = this.el.getBoundingClientRect().height + this.margin
     if (isNaN(sh) || isNaN(ch)) {
