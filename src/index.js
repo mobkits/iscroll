@@ -151,9 +151,9 @@ class Iscroll extends Emitter {
     }
 
     let touch = this.getTouch(e)
-    let sx = touch.clientX
-    let sy = touch.clientY
-    let at = now()
+    let sx = this.clientX = touch.clientX
+    let sy = this.clientY = touch.clientY
+    let at = this.ts = now()
 
 
     this.onstart = function(x, y) {
@@ -164,8 +164,6 @@ class Iscroll extends Emitter {
       let dy = Math.abs(y - sy)
         // move left and right
       if (dx > dy) return
-      this.clientY = touch.clientY
-      this.dy = 0
       this.ts = now()
       this.down = {
         x: sx,
@@ -196,7 +194,7 @@ class Iscroll extends Emitter {
       if (started !== true) return
     }
     let down = this.down
-    let dy = this.dy = y - down.y
+    let dy =  y - down.y
 
     //calculate speed every 100 milisecond
     this.calcuteSpeed(touch.clientY, down.at)
