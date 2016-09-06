@@ -262,8 +262,8 @@ class Iscroll extends Emitter {
     let ease
     let minY = this.minY
     if (y > 0 || y < minY) {
-      duration = 300
-      ease = 'out-circ'
+      duration = 600
+      ease = 'out-quart'
       destination = y > 0 ? 0 : minY
     } else if (destination > 0 || destination < minY) {
       ease = outBack;
