@@ -1,4 +1,4 @@
-import {has3d, transform} from 'prop-detect';
+import {has3d, transform} from 'prop-detect'
 
 /**
  * Handlebar contructor
@@ -9,7 +9,7 @@ import {has3d, transform} from 'prop-detect';
  */
 class handlebar {
   constructor(scrollable, className) {
-    const el = this.el = document.createElement('div');
+    const el = this.el = document.createElement('div')
     el.className = className || 'iscroll-handlebar'
     scrollable.appendChild(el)
   }
