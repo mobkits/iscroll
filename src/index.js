@@ -45,6 +45,7 @@ class Iscroll extends Emitter {
     let self = this
     if (defineProperty) {
       defineProperty(this.scrollable, 'scrollTop', {
+        configurable: true,
         set(v) {
           return self.scrollTo(-v, 400)
         },
@@ -64,7 +65,7 @@ class Iscroll extends Emitter {
     }
     this._refresh = this.refresh.bind(this)
     this._unbindresize = resizelistener(this.el, this._refresh)
-    this.onScrollEnd = debounce(this.onScrollEnd, 30)
+    this.onScrollEnd = debounce(this.onScrollEnd.bind(this), 30)
     this.transformHandlebar = throttle(this.transformHandlebar, 100)
   }
 
