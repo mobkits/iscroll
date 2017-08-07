@@ -40,7 +40,7 @@
     "has-touch": "^1.0.1",
     "mouse-wheel-event": "^1.2.3",
     "prop-detect": "^1.1.0",
-    "resizelistener": "0.0.3",
+    "resizelistener": "^1.1.0",
     "throttleit": "^1.0.0"
   },
   "devDependencies": {
